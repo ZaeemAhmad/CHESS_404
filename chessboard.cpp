@@ -40,15 +40,18 @@ void ChessBoard::initialBoard()
                 }
 
                 board[row][col] = ChessPiece(type, color);
-            } else if (row == 1 || row == 4) {
+            }
+            else if (row == 1 || row == 6) {
                 // Placing pawns
                 ChessPiece::Color color = (row == 1) ? ChessPiece::Color::Black : ChessPiece::Color::White;
                 qDebug() << "At row: " << row << " Color: " << color;
                 ChessPiece::Type type = ChessPiece::Type::Pawn;
                 board[row][col] = ChessPiece(type, color);
-            } else {
+            } else
+            {
                 // Empty Squares in the middle
-                board[row][col] = ChessPiece();
+                 ChessPiece::Type type = ChessPiece::Type::Empty;
+                board[row][col] = ChessPiece(type);
             }
         }
     }
@@ -64,6 +67,7 @@ void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
 bool ChessBoard::isSquareOccupied(int row, int col) const
 {
     // Returns Truthy or Falsy based on if the current square is taken or not
+    return NULL;
 }
 
 const ChessPiece &ChessBoard::getPiece(int row, int col) const

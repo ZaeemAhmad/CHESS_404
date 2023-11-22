@@ -14,7 +14,7 @@ ChessPiece::Color ChessPiece::getColor() const
 
 bool ChessPiece::isEmpty() const
 {
-    return (type == Pawn && color == White);
+    return (type == Empty );
 }
 
 bool ChessPiece::isValidMove(int fromRow, int fromCol, int toRow, int toCol)

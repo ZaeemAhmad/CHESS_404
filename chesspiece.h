@@ -6,12 +6,12 @@
 class ChessPiece
 {
 public:
-    enum Type { King, Queen, Bishop, Knight, Rook, Pawn };
+    enum Type { King, Queen, Bishop, Knight, Rook, Pawn,Empty };
     enum Color { White, Black };
 
 
-    ChessPiece(Type type = Pawn, Color color = White);
-
+    ChessPiece(Type type = Queen, Color color = White);
+//  ChessPiece(Type type = Pawn, Color color = White);
     Type getType() const;
     Color getColor() const;
 
