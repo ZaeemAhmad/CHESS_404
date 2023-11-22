@@ -9,11 +9,15 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    main.cpp \
-    mainwindow.cpp
+    ../chessboard-practice/chessboard.cpp \
+    ../chessboard-practice/chessboardwidget.cpp \
+    ../chessboard-practice/chesspiece.cpp \
+    ../chessboard-practice/main.cpp
 
 HEADERS += \
-    mainwindow.h
+    ../chessboard-practice/chessboard.h \
+    ../chessboard-practice/chessboardwidget.h \
+    ../chessboard-practice/chesspiece.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -21,4 +25,16 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 FORMS += \
-    form.ui
+    ../chessboard-practice/chessboardwidget.ui
+
+SUBDIRS += \
+    ../chessboard-practice/chessboard-practice.pro \
+    ../chessboard-practice/chessboard-practice.pro
+
+RESOURCES += \
+    ../chessboard-practice/assets.qrc
+
+DISTFILES += \
+    ../chessboard-practice/chessPieces.png \
+    ../chessboard-practice/chessboard-practice.pro.user \
+    ../chessboard-practice/chessboard-practice.pro.user.326261e
