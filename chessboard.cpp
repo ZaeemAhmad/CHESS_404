@@ -61,13 +61,32 @@ void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
 {
     // Chess Move implementation logic
     // Checking if the move is valid before upadating the board
+    if(isValidChessSquare(fromRow, fromCol) &&
+        isValidChessSquare(toRow, toCol)){
+
+        const ChessPiece::Color currentPositionPiece = getPieceColor(fromRow, fromCol);
+        const ChessPiece::Color nextPositionPiece = getPieceColor(toRow, toCol);
+
+        if(currentPositionPiece != nextPositionPiece){
+            ChessPiece pieceToMove = board[fromRow][fromCol];
+            // firstly changing the current board location as empty
+            board[fromRow][fromCol] = ChessPiece(); // Initialize the current piece to default constructor
+            // Now updating the piece location
+            board[toRow][toCol] = pieceToMove;
+        }
+    }
 
 }
 
 bool ChessBoard::isSquareOccupied(int row, int col) const
 {
     // Returns Truthy or Falsy based on if the current square is taken or not
-    return NULL;
+    return false;
+}
+
+bool ChessBoard::isValidChessSquare(int row, int col) const
+{
+    return (row >= 0 && row < 7 && col >= 0 && col < 7);
 }
 
 const ChessPiece &ChessBoard::getPiece(int row, int col) const
@@ -78,6 +97,16 @@ const ChessPiece &ChessBoard::getPiece(int row, int col) const
     } else {
         // Return an empty chess piece if the row and col are out of bound
         return ChessPiece();
+    }
+}
+
+ChessPiece::Color ChessBoard::getPieceColor(int row, int col) const
+{
+    if(row >= 0 && row < 8 && col >= 0 && col < 8){
+        ChessPiece::Color pieceColor = board[row][col].getColor();
+        return pieceColor;
+    }else{
+        return ChessPiece::Color::NONE;
     }
 }
 

@@ -11,7 +11,9 @@ public:
     void initialBoard();
     void movePiece(int fromRow, int fromCol, int toRow, int toCol);
     bool isSquareOccupied(int row, int col) const;
+    bool isValidChessSquare(int row, int col) const;
     const ChessPiece& getPiece(int row, int col) const;
+    ChessPiece::Color getPieceColor(int row, int col) const;
 
 private:
     ChessPiece board[8][8];
