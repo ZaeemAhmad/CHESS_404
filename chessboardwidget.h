@@ -35,7 +35,8 @@ private:
 
     void drawChessBoard(QPainter& painter);
     void drawAllChessPieces(QPainter& painter);
-    void drawChessPiece(QPainter& painter, int row, int col, QColor color, const QPixmap& pixmap);
+    void drawChessPiece(QPainter& painter, int row, int col, const QPixmap& pixmap);
+    void highlightValidMoves(int row, int col);
     bool isValidChessSquare(int row, int col) const;
     QPixmap getPiecePixmap(ChessPiece::Type type, ChessPiece::Color color);
 

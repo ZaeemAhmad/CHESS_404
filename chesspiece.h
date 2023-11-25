@@ -15,8 +15,8 @@ public:
 
     bool isEmpty() const;
 
-    bool isValidMove(int fromRow, int fromCol, int toRow, int toCol);
-    bool isValidCapture(int fromRow, int fromCol, int toRow, int toCol);
+    bool isValidMove(Type type, Color color,  int fromRow, int fromCol, int toRow, int toCol) const;
+    bool isValidCapture(Type type, Color color, int fromRow, int fromCol, int toRow, int toCol);
 private:
     Type type;
     Color color;

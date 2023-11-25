@@ -67,7 +67,7 @@ void ChessBoardWidget::drawChessBoard(QPainter& painter) {
     }
 }
 
-void ChessBoardWidget::drawChessPiece(QPainter& painter, int row, int col, QColor color, const QPixmap& pixmap) {
+void ChessBoardWidget::drawChessPiece(QPainter& painter, int row, int col, const QPixmap& pixmap) {
     const int squareSize = width() / 8;
 
     // Enable anti-aliasing for smoother rendering
@@ -80,50 +80,24 @@ void ChessBoardWidget::drawChessPiece(QPainter& painter, int row, int col, QColo
     painter.drawPixmap(col * squareSize, row * squareSize, squareSize, squareSize, pixmap);
 }
 
+void ChessBoardWidget::highlightValidMoves(int row, int col)
+{
+
+}
+
 void ChessBoardWidget::drawAllChessPieces(QPainter& painter) {
     const int boardSize = 8;
-    const int squareSize = width() / boardSize;
 
     for(int row = 0; row < boardSize; row++){
         for(int col = 0; col < boardSize; col++){
             // Getting chess piece at the current board position
             ChessPiece piece = chessBoard->getPiece(row, col);
-//            qDebug() << "Piece at (" << row << ", " << col << "): Type=" << static_cast<int>(piece.getType()) << ", Color=" << static_cast<int>(piece.getColor());
             // Rendering board based on the piece information
             if(!piece.isEmpty()){
-                drawChessPiece(painter, row, col, (piece.getColor() == ChessPiece::Color::White) ? Qt::white : Qt::black, getPiecePixmap(piece.getType(), piece.getColor()));
+                drawChessPiece(painter, row, col, getPiecePixmap(piece.getType(), piece.getColor()));
             }
         }
     }
-
-    // Below is previous implementation
-//    // White pieces
-//    drawChessPiece(painter, 0, 0, Qt::white, whiteRookPixmap); // Rook
-//    drawChessPiece(painter, 0, 1, Qt::white, whiteKnightPixmap); // Knight
-//    drawChessPiece(painter, 0, 2, Qt::white, whiteBishopPixmap); // Bishop
-//    drawChessPiece(painter, 0, 3, Qt::white, whiteQueenPixmap); // Queen
-//    drawChessPiece(painter, 0, 4, Qt::white, whiteKingPixmap); // King
-//    drawChessPiece(painter, 0, 5, Qt::white, whiteBishopPixmap); // Bishop
-//    drawChessPiece(painter, 0, 6, Qt::white, whiteKnightPixmap); // Knight
-//    drawChessPiece(painter, 0, 7, Qt::white, whiteRookPixmap); // Rook
-
-//    for (int col = 0; col < boardSize; ++col) {
-//        drawChessPiece(painter, 1, col, Qt::white, whitePawnPixmap); // Pawn
-//    }
-
-//    // Black pieces
-//    for (int col = 0; col < boardSize; ++col) {
-//        drawChessPiece(painter, 6, col, Qt::black, blackPawnPixmap); // Pawn
-//    }
-
-//    drawChessPiece(painter, 7, 0, Qt::black, blackRookPixmap); // Rook
-//    drawChessPiece(painter, 7, 1, Qt::black, blackKnightPixmap); // Knight
-//    drawChessPiece(painter, 7, 2, Qt::black, blackBishopPixmap); // Bishop
-//    drawChessPiece(painter, 7, 3, Qt::black, blackQueenPixmap); // Queen
-//    drawChessPiece(painter, 7, 4, Qt::black, blackKingPixmap); // King
-//    drawChessPiece(painter, 7, 5, Qt::black, blackBishopPixmap); // Bishop
-//    drawChessPiece(painter, 7, 6, Qt::black, blackKnightPixmap); // Knight
-//    drawChessPiece(painter, 7, 7, Qt::black, blackRookPixmap); // Rook
 }
 
 // Implementation of drag and drop interface
@@ -138,14 +112,14 @@ void ChessBoardWidget::mousePressEvent(QMouseEvent *event)
             ChessPiece clickedPiece = chessBoard->getPiece(row, col);
 
             if(!clickedPiece.isEmpty()){
-            dragStartRow = row;
-            dragStartCol = col;
-           // Capture the piece to be dragged
-            dragStartPosition = event->pos();
-            qDebug() << "Start postion" << dragStartPosition;
-            draggedPiece = getPiecePixmap(chessBoard->getPiece(row, col).getType(), chessBoard->getPiece(row, col).getColor());
-            qDebug() << "Dragged Piece: " << draggedPiece;
-            isDragging = true;
+                dragStartRow = row;
+                dragStartCol = col;
+                //           // Capture the piece to be dragged
+                dragStartPosition = event->pos();
+                //            qDebug() << "Start postion" << dragStartPosition;
+                draggedPiece = getPiecePixmap(chessBoard->getPiece(row, col).getType(), chessBoard->getPiece(row, col).getColor());
+                //            qDebug() << "Dragged Piece: " << draggedPiece;
+                isDragging = true;
             }
         }
     }
@@ -154,17 +128,7 @@ void ChessBoardWidget::mousePressEvent(QMouseEvent *event)
 void ChessBoardWidget::mouseMoveEvent(QMouseEvent *event)
 {
     if(isDragging){
-        QPoint currentPos = event->pos();
-        QRect rect = draggedPiece.rect();
-        rect.moveTopLeft(currentPos - dragStartPosition);
-
-        // Ensure the piece stays within the board
-        if(rect.left() < 0) rect.moveLeft(0);
-        if(rect.top() < 0) rect.moveTop(0);
-        if(rect.right() > width()) rect.moveRight(width());
-        if(rect.bottom() > height()) rect.moveBottom(height());
-
-        dragStartPosition = currentPos;
+        dragStartPosition = event->pos() - QPoint(draggedPiece.width() / 2, draggedPiece.height() / 2);
         update(); // Trigger a refresh
     }
 }
@@ -189,19 +153,8 @@ void ChessBoardWidget::mouseReleaseEvent(QMouseEvent *event)
 
 bool ChessBoardWidget::isValidChessSquare(int row, int col) const
 {
-    return row >= 0 && row < 8 && col >= 0 && col < 8;
+    return (row >= 0 && row < 8 && col >= 0 && col < 8);
 }
-
-//QPixmap ChessBoardWidget::getChessPiecePixmap(int row, int col) const
-//{
-//    const int spriteWidth = spritesheetImage.width() / 6;
-//    const int spriteHeight = spritesheetImage.height() / 2;
-
-//    // Use the correct sprite width and height for copying from the spritesheet
-//    // width
-//    qDebug() << "Row: " << row << " column: " << col;
-//    return QPixmap::fromImage(spritesheetImage.copy(0, col * spriteHeight, spriteWidth, spriteHeight));
-//}
 
 QPixmap ChessBoardWidget::getPiecePixmap(ChessPiece::Type type, ChessPiece::Color color)
 {
@@ -209,6 +162,5 @@ QPixmap ChessBoardWidget::getPiecePixmap(ChessPiece::Type type, ChessPiece::Colo
     const int spriteWidth = spritesheetImage.width() / 6;
     const int spriteHeight = spritesheetImage.height() / 2;
 
-    return QPixmap::fromImage(spritesheetImage.copy((static_cast<int>(type) % 6) * spriteWidth, (static_cast<int>(color) % 2) * spriteHeight, spriteWidth, spriteHeight));
+    return QPixmap::fromImage(spritesheetImage.copy((type % 6) * spriteWidth, (color % 2) * spriteHeight, spriteWidth, spriteHeight));
 }
-
