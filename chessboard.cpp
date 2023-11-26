@@ -67,7 +67,7 @@ void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
         const ChessPiece::Color nextPositionPieceColor = getPieceColor(toRow, toCol);
 
         if(currentPieceColor != nextPositionPieceColor){
-            if(board[fromRow][fromCol].isValidMove(board[fromRow][fromCol].getType(), currentPieceColor, fromRow, fromCol, toRow, toCol)){
+            if(board[fromRow][fromCol].isValidMove(board[fromRow][fromCol].getType(), fromRow, fromCol, toRow, toCol, *this)){
                 ChessPiece pieceToMove = board[fromRow][fromCol];
                 board[fromRow][fromCol] = ChessPiece(); // To clear the current square
                 board[toRow][toCol] = pieceToMove; // Move the piece to the position

@@ -1,4 +1,5 @@
 #include "chesspiece.h"
+#include "chessboard.h"
 #include <QDebug>
 
 ChessPiece::ChessPiece(Type type, Color color) : type(type), color(color) {}
@@ -18,27 +19,71 @@ bool ChessPiece::isEmpty() const
     return ( type == Empty );
 }
 
-bool ChessPiece::isValidMove(Type type, Color color, int fromRow, int fromCol, int toRow, int toCol) const
+bool ChessPiece::isValidMove(Type type, int fromRow, int fromCol, int toRow, int toCol, const ChessBoard& board) const
 {
     const int rowDiff = fromRow - toRow;
     const int colDiff = fromCol - toCol;
+    int i;
 
-    qDebug() << type << color;
+    ChessPiece piece = board.getPiece(fromRow, fromCol);
+
     if(type == Rook){
-        // A Rook can move horizontal & Vertical
-        if(color == White){
-            // From Row: 7 to 0 & Col: 0 to 7
+        qDebug() << "Inside";
+        if(fromRow == toRow && fromCol == toCol)
+            return false; // Case when the piece is dropped at same location
 
-        }else{
-            // From Row: 0 to 7 & Col: 7 to 0
+        // A Rook can move horizontal & Vertical
+
+        // Colision detection
+        // From Row: 7 to 0 & Col: 0 to 7
+        if(fromRow == toRow){
+            // Moved Horizontally
+
+            if(fromCol < toCol){
+                // Move right
+                for(i = fromCol + 1; i <= toCol; i++){
+                    if(!board.getPiece(fromRow, i).isEmpty())
+                        return isValidCapture(fromRow, i, toRow, toCol, board);
+                }
+            } else {
+                // Move left
+                for(i = fromCol - 1; i >= toCol; i--){
+                    if(!board.getPiece(fromRow, i).isEmpty())
+                        return isValidCapture(fromRow, i, toRow, toCol, board);
+                }
+            }
+        } else if (fromCol == toCol){
+            // Vertical Move
+            if(fromRow < toRow){
+                // Move down
+                for(i = fromRow + 1; i <= toRow; i++){
+                    if(!board.getPiece(i, fromCol).isEmpty())
+                        return isValidCapture(i, fromCol, toRow, toCol, board);
+                }
+            } else {
+                // Move up
+                for(i = fromRow - 1; i >= toRow; i--){
+                    if(!board.getPiece(i, fromCol).isEmpty())
+                        return isValidCapture(i, fromCol, toRow, toCol, board);
+                }
+            }
+        } else {
+            // Not a valid move
+            return false;
         }
+
     }
     return true;
 }
 
-bool ChessPiece::isValidCapture(Type type, Color color,int fromRow, int fromCol, int toRow, int toCol)
+bool ChessPiece::isValidCapture(int fromRow, int fromCol, int toRow, int toCol, const ChessBoard &board) const
 {
     // Valid capture logic here
+    if(!board.isValidChessSquare(toRow, toCol))
+        return false;
 
-    return true;
+    ChessPiece piece = board.getPiece(fromRow, fromCol);
+    ChessPiece nextPiece = board.getPiece(toRow, toCol);
+
+    return !nextPiece.isEmpty() && nextPiece.getColor() == piece.getColor();
 }

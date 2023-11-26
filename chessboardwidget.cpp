@@ -129,6 +129,7 @@ void ChessBoardWidget::mouseMoveEvent(QMouseEvent *event)
 {
     if(isDragging){
         dragStartPosition = event->pos() - QPoint(draggedPiece.width() / 2, draggedPiece.height() / 2);
+        draggedPiece = draggedPiece.scaled(QSize(100, 100));
         update(); // Trigger a refresh
     }
 }

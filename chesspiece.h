@@ -3,6 +3,8 @@
 
 #include <QString>
 
+class ChessBoard;
+
 class ChessPiece
 {
 public:
@@ -15,8 +17,8 @@ public:
 
     bool isEmpty() const;
 
-    bool isValidMove(Type type, Color color,  int fromRow, int fromCol, int toRow, int toCol) const;
-    bool isValidCapture(Type type, Color color, int fromRow, int fromCol, int toRow, int toCol);
+    bool isValidMove(Type type, int fromRow, int fromCol, int toRow, int toCol, const ChessBoard& board) const;
+    bool isValidCapture(int fromRow, int fromCol, int toRow, int toCol, const ChessBoard& board) const;
 private:
     Type type;
     Color color;
