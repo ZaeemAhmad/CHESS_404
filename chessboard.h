@@ -3,7 +3,7 @@
 
 #include "chesspiece.h"
 
-class ChessBoard
+class ChessBoard :public ChessPiece
 {
 public:
     ChessBoard();
@@ -19,8 +19,8 @@ public:
 
     // Getters
     const ChessPiece& getPiece(int row, int col) const;
-    ChessPiece::Color getPieceColor(int row, int col) const;
-    ChessPiece::Type getPieceType(int row, int col) const;
+  /*  ChessPiece::*/Color getPieceColor(int row, int col) const;
+  /*  ChessPiece::*/Type getPieceType(int row, int col) const;
 
 private:
     ChessPiece board[8][8];

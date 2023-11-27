@@ -21,12 +21,7 @@ bool ChessPiece::isEmpty() const
 
 bool ChessPiece::isValidMove(Type type, int fromRow, int fromCol, int toRow, int toCol, const ChessBoard& board) const
 {
-    const int rowDiff = fromRow - toRow;
-    const int colDiff = fromCol - toCol;
     int i;
-
-    ChessPiece piece = board.getPiece(fromRow, fromCol);
-
     if(type == Rook){
         qDebug() << "Inside";
         if(fromRow == toRow && fromCol == toCol)
