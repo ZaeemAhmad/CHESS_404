@@ -56,7 +56,15 @@ void ChessBoard::initialBoard()
     }
 }
 
-
+void ChessBoard::removePiece(int row, int col)
+{
+    if (isValidChessSquare(row, col)) {
+        // Set the piece at the specified position to be empty
+        board[row][col] = ChessPiece();  // Assuming ChessPiece has a default constructor for an empty piece
+    } else {
+        qDebug() << "Invalid position for removing piece.";
+    }
+}
 
 bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int toCol)
 {
@@ -74,7 +82,7 @@ bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int t
         return true;
         break;
     case King:
-        return true;
+        return isValidMove_King( type,  fromRow,fromCol,  toRow,  toCol, *this);
         break;
     case Bishop:
         return true;

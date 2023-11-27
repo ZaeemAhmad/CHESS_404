@@ -5,7 +5,7 @@
 #include <QImage>
 #include <QPixmap>
 #include <QPoint>
-#include <QMouseEvent>
+#include<QMouseEvent>
 #include <chesspiece.h>
 #include <chessboard.h>
 

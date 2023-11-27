@@ -13,7 +13,7 @@ public:
     // Piece Movement Logic
     void movePiece(int fromRow, int fromCol, int toRow, int toCol);
     bool isSquareOccupied(int row, int col) const;
-
+ void removePiece(int row, int col);
     bool VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int toCol);
 
 
