@@ -56,18 +56,53 @@ void ChessBoard::initialBoard()
     }
 }
 
+
+
+bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int toCol)
+{
+    // Rook and Knight validation Jawad
+    // King and Queen validation Noraiz
+    // Pawn and Bishop validation Zaeem
+    switch (type) {
+    case Rook:
+        return isValidMove_Rook(type, fromRow, fromCol, toRow, toCol, *this);
+        break;
+    case Knight:
+        return true;
+        break;
+    case Queen:
+        return true;
+        break;
+    case King:
+        return true;
+        break;
+    case Bishop:
+        return true;
+        break;
+    case Pawn:
+        return true;
+        break;
+    default:
+        return false;
+        break;
+    }
+}
+
+
 void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
 {
     // Chess Move implementation logic
     // Checking if the move is valid before upadating the board
-    if(isValidChessSquare(fromRow, fromCol) &&
-        isValidChessSquare(toRow, toCol)){
+    if ( isValidChessSquare(fromRow, fromCol) && isValidChessSquare(toRow, toCol) )
+    {
 
         const /*ChessPiece::*/Color currentPieceColor =getPieceColor(fromRow, fromCol);
         const /*ChessPiece::*/Color nextPositionPieceColor = getPieceColor(toRow, toCol);
 
-        if(currentPieceColor != nextPositionPieceColor){
-            if(board[fromRow][fromCol].isValidMove(getPieceType(fromRow,fromCol), fromRow, fromCol, toRow, toCol, *this)){
+        if(currentPieceColor != nextPositionPieceColor)
+        {
+            if ( VALIDMOVE(getPieceType(fromRow,fromCol), fromRow, fromCol, toRow, toCol) )
+            {
                 ChessPiece pieceToMove = board[fromRow][fromCol];
                 board[fromRow][fromCol] = ChessPiece(); // To clear the current square
                 board[toRow][toCol] = pieceToMove; // Move the piece to the position

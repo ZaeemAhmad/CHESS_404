@@ -19,7 +19,8 @@ bool ChessPiece::isEmpty() const
     return ( type == Empty );
 }
 
-bool ChessPiece::isValidMove(Type type, int fromRow, int fromCol, int toRow, int toCol, const ChessBoard& board) const
+
+bool ChessPiece::isValidMove_Rook(Type type, int fromRow, int fromCol, int toRow, int toCol, const ChessBoard& board) const
 {
     int i;
 
