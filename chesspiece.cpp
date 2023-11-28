@@ -105,10 +105,17 @@ bool ChessPiece::isValidMove_King(Type type,int fromRow, int fromCol, int toRow,
 bool ChessPiece::isValidMove_Pawn( int fromRow, int fromCol, int toRow, int toCol, const ChessBoard& board) const
 {
     int rowDiff=toRow-fromRow, colDiff=toCol-fromCol;
-    if ( board.getPieceColor(fromRow,fromCol)==Black && colDiff==0)
+    if ( board.getPieceColor(fromRow,fromCol)==Black && colDiff==0)//check if piece is black and moving stright or not.
     {
         qDebug()<<"black";
-        if (rowDiff==1)
+        if (rowDiff==1)//check if piece is moving only one square
+        {
+            if (!board.isSquareOccupied(toRow,toCol))// check if destination square is occupied or not.
+                return true;
+            else
+                return false;
+        }
+        else if (rowDiff==2 && fromRow==1)// check if piece is moving 2 squares from initial position.
         {
             if (!board.isSquareOccupied(toRow,toCol))
                 return true;
@@ -116,10 +123,17 @@ bool ChessPiece::isValidMove_Pawn( int fromRow, int fromCol, int toRow, int toCo
                 return false;
         }
     }
-    else if ( board.getPieceColor(fromRow,fromCol)==White && colDiff==0)
+    else if ( board.getPieceColor(fromRow,fromCol)==White && colDiff==0)//check if white and moving stright or not.
     {
         qDebug()<<"white";
-        if (rowDiff == -1)
+        if (rowDiff == -1)//check if piece is moving only one square
+        {
+            if (!board.isSquareOccupied(toRow,toCol))// check if destination square is occupied or not.
+                return true;
+            else
+                return false;
+        }
+        else if (rowDiff==-2 && fromRow==6)// check if piece is moving 2 squares from initial position.
         {
             if (!board.isSquareOccupied(toRow,toCol))
                 return true;
