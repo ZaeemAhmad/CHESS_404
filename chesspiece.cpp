@@ -1,7 +1,7 @@
 #include "chesspiece.h"
 #include "chessboard.h"
 #include <QDebug>
-
+#include<iostream>
 ChessPiece::ChessPiece(Type type, Color color) : type(type), color(color) {}
 
 ChessPiece::Type ChessPiece::getType() const
@@ -19,13 +19,13 @@ bool ChessPiece::isEmpty() const
     return ( type == Empty );
 }
 
+// Validation code all pieces
 
 bool ChessPiece::isValidMove_Rook(Type type, int fromRow, int fromCol, int toRow, int toCol, const ChessBoard& board) const
 {
     int i;
 
     if(type == Rook){
-        qDebug() << "Inside";
         if(fromRow == toRow && fromCol == toCol)
             return false; // Case when the piece is dropped at same location
 
@@ -75,8 +75,6 @@ bool ChessPiece::isValidMove_Rook(Type type, int fromRow, int fromCol, int toRow
 bool ChessPiece::isValidMove_King(Type type,int fromRow, int fromCol, int toRow, int toCol, ChessBoard& board) const
 {
     if (type == King) {
-        qDebug() << "Inside King";
-
         // Check if the destination is the same as the source
         if (fromRow == toRow && fromCol == toCol)
             return false;
@@ -103,6 +101,36 @@ bool ChessPiece::isValidMove_King(Type type,int fromRow, int fromCol, int toRow,
     return false;
 }
 
+
+bool ChessPiece::isValidMove_Pawn( int fromRow, int fromCol, int toRow, int toCol, const ChessBoard& board) const
+{
+    int rowDiff=toRow-fromRow, colDiff=toCol-fromCol;
+    if ( board.getPieceColor(fromRow,fromCol)==Black && colDiff==0)
+    {
+        qDebug()<<"black";
+        if (rowDiff==1)
+        {
+            if (!board.isSquareOccupied(toRow,toCol))
+                return true;
+            else
+                return false;
+        }
+    }
+    else if ( board.getPieceColor(fromRow,fromCol)==White && colDiff==0)
+    {
+        qDebug()<<"white";
+        if (rowDiff == -1)
+        {
+            if (!board.isSquareOccupied(toRow,toCol))
+                return true;
+            else
+                return false;
+        }
+    }
+    return false;
+}
+
+// isValidCapture returns true if colors are same.
 bool ChessPiece::isValidCapture(int fromRow, int fromCol, int toRow, int toCol, const ChessBoard &board) const
 {
     // Valid capture logic here
@@ -111,6 +139,5 @@ bool ChessPiece::isValidCapture(int fromRow, int fromCol, int toRow, int toCol, 
 
     ChessPiece piece = board.getPiece(fromRow, fromCol);
     ChessPiece nextPiece = board.getPiece(toRow, toCol);
-
     return (nextPiece.getColor() == piece.getColor());
 }

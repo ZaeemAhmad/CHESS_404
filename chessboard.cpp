@@ -88,7 +88,8 @@ bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int t
         return true;
         break;
     case Pawn:
-        return true;
+        qDebug()<<"pawn VALIDMOVE";
+        return isValidMove_Pawn(fromRow,fromCol,toRow,toCol,*this);
         break;
     default:
         return false;
@@ -106,8 +107,10 @@ void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
 
         const /*ChessPiece::*/Color currentPieceColor =getPieceColor(fromRow, fromCol);
         const /*ChessPiece::*/Color nextPositionPieceColor = getPieceColor(toRow, toCol);
-
-        if(currentPieceColor != nextPositionPieceColor)
+        // this condition prevents same color pieces to move upon them.
+        // is condition ki waja sy same color ky pieces ek dosry ko capture nai kar skty.
+        qDebug()<<"Origin: "<<fromRow<<", "<<fromCol<<"\nDestination: "<<toRow<<", "<<toCol;
+        if ( currentPieceColor != nextPositionPieceColor )
         {
             if ( VALIDMOVE(getPieceType(fromRow,fromCol), fromRow, fromCol, toRow, toCol) )
             {
