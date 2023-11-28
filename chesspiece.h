@@ -14,6 +14,7 @@ public:
     ChessPiece(Type type = Empty, Color color = NONE);
     Type getType() const;
     Color getColor() const;
+    void setType(Type t);
 
     bool isEmpty() const;
 

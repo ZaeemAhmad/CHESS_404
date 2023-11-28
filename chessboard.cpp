@@ -56,6 +56,13 @@ void ChessBoard::initialBoard()
     }
 }
 
+void ChessBoard::setPieceType(int row, int col, ChessPiece::Type type)
+{
+    if (isValidChessSquare(row, col)) {
+        board[row][col].setType(type);
+    }
+}
+
 void ChessBoard::removePiece(int row, int col)
 {
     if (isValidChessSquare(row, col)) {

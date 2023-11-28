@@ -29,6 +29,7 @@ private:
     ChessBoard* chessBoard;
     QPixmap draggedPiece;
     QPoint dragStartPosition;
+    ChessPiece::Type currentPieceType; // Stores the Type of current Piece on the board for moving it around the board
     bool isDragging = false;
     int dragStartRow;
     int dragStartCol;

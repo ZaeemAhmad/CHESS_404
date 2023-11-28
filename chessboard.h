@@ -9,6 +9,7 @@ public:
     ChessBoard();
 
     void initialBoard();
+    void setPieceType(int row, int col, Type t);
 
     // Piece Movement Logic
     void movePiece(int fromRow, int fromCol, int toRow, int toCol);

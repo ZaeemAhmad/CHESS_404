@@ -14,6 +14,11 @@ ChessPiece::Color ChessPiece::getColor() const
     return color;
 }
 
+void ChessPiece::setType(Type t)
+{
+    type = t;
+}
+
 bool ChessPiece::isEmpty() const
 {
     return ( type == Empty );
@@ -82,7 +87,9 @@ bool ChessPiece::isValidMove_King(Type type,int fromRow, int fromCol, int toRow,
         // King can move one square in any direction (horizontal, vertical, or diagonal)
         int rowDiff = qAbs(toRow - fromRow);
         int colDiff = qAbs(toCol - fromCol);
+        qDebug() << qAbs(toRow - fromRow) << (toRow - fromRow);
 
+        qDebug() << board.getPieceType(fromRow, fromCol) << board.getPieceType(toRow, toCol);
         if ((rowDiff == 1 && colDiff == 0) ||  // Vertical move
             (rowDiff == 0 && colDiff == 1) ||  // Horizontal move
             (rowDiff == 1 && colDiff == 1))    // Diagonal move
@@ -90,8 +97,10 @@ bool ChessPiece::isValidMove_King(Type type,int fromRow, int fromCol, int toRow,
             // Check for collision with other pieces
             if (!board.getPiece(toRow, toCol).isEmpty()) {
                 // Capture the piece at the destination and delete the piece
-                board.removePiece(toRow, toCol);
+//                board.removePiece(toRow, toCol);
             }
+
+            qDebug() << board.getPieceType(fromRow, fromCol) << board.getPieceType(toRow, toCol);
 
             return true;
         }

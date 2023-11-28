@@ -110,16 +110,17 @@ void ChessBoardWidget::mousePressEvent(QMouseEvent *event)
 
         if(isValidChessSquare(row, col)){
             ChessPiece clickedPiece = chessBoard->getPiece(row, col);
-
             if(!clickedPiece.isEmpty()){
                 dragStartRow = row;
                 dragStartCol = col;
+                currentPieceType = chessBoard->getPieceType(dragStartRow, dragStartCol);
                 //           // Capture the piece to be dragged
                 dragStartPosition = event->pos();
                 //            qDebug() << "Start postion" << dragStartPosition;
                 draggedPiece = getPiecePixmap(chessBoard->getPiece(row, col).getType(), chessBoard->getPiece(row, col).getColor());
                 //            qDebug() << "Dragged Piece: " << draggedPiece;
                 isDragging = true;
+                chessBoard->setPieceType(dragStartRow, dragStartCol, ChessPiece::Type::Empty);
             }
         }
     }
@@ -130,6 +131,7 @@ void ChessBoardWidget::mouseMoveEvent(QMouseEvent *event)
     if(isDragging){
         dragStartPosition = event->pos() - QPoint(draggedPiece.width() / 2, draggedPiece.height() / 2);
         draggedPiece = draggedPiece.scaled(QSize(100, 100));
+
         update(); // Trigger a refresh
     }
 }
@@ -139,6 +141,8 @@ void ChessBoardWidget::mouseReleaseEvent(QMouseEvent *event)
     if(event->button() == Qt::LeftButton && isDragging){
         int col = event->pos().x() / (width() / 8);
         int row = event->pos().y() / (height() / 8);
+
+        chessBoard->setPieceType(dragStartRow, dragStartCol, currentPieceType);
 
         if(isValidChessSquare(row, col)){
             chessBoard->movePiece(dragStartRow, dragStartCol, row, col);
