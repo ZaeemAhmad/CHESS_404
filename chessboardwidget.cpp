@@ -3,6 +3,8 @@
 
 ChessBoardWidget::ChessBoardWidget(QWidget* parent) : QWidget(parent) {
     setFixedSize(700, 700);
+    dragStartRow = -1;
+    dragStartCol = -1;
 
     // Loading the sprite image
     spritesheetImage.load(":/images/chessPieces.png");
@@ -87,11 +89,18 @@ void ChessBoardWidget::highlightValidMoves(int row, int col)
 
 void ChessBoardWidget::drawAllChessPieces(QPainter& painter) {
     const int boardSize = 8;
+    const int squareSize = width() / 8;
 
     for(int row = 0; row < boardSize; row++){
         for(int col = 0; col < boardSize; col++){
             // Getting chess piece at the current board position
             ChessPiece piece = chessBoard->getPiece(row, col);
+
+
+            // Highlight the selected piece
+            if (row == dragStartRow && col == dragStartCol) {
+                painter.fillRect(col * squareSize, row * squareSize, squareSize, squareSize, QColor(0, 255, 0, 128));
+            }
             // Rendering board based on the piece information
             if(!piece.isEmpty()){
                 drawChessPiece(painter, row, col, getPiecePixmap(piece.getType(), piece.getColor()));

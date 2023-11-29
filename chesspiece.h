@@ -23,6 +23,7 @@ public:
     bool isValidMove_King(Type type,int fromRow, int fromCol, int toRow, int toCol, ChessBoard& board) const;
 //=======
     bool isValidMove_Pawn( int fromRow, int fromCol, int toRow, int toCol, const ChessBoard& board) const;
+    bool isValidMove_Knight(int fromRow, int fromCol, int toRow, int toCol, const ChessBoard& board) const;
 
 //>>>>>>> Stashed changes
     bool isValidCapture(int fromRow, int fromCol, int toRow, int toCol, const ChessBoard& board) const;

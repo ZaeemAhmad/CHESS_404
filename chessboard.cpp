@@ -83,7 +83,7 @@ bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int t
         return isValidMove_Rook(type, fromRow, fromCol, toRow, toCol, *this);
         break;
     case Knight:
-        return true;
+        return isValidMove_Knight(fromRow, fromCol, toRow, toCol, *this);
         break;
     case Queen:
         return true;

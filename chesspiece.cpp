@@ -77,6 +77,7 @@ bool ChessPiece::isValidMove_Rook(Type type, int fromRow, int fromCol, int toRow
     }
     return true;
 }
+
 bool ChessPiece::isValidMove_King(Type type,int fromRow, int fromCol, int toRow, int toCol, ChessBoard& board) const
 {
     if (type == King) {
@@ -94,14 +95,6 @@ bool ChessPiece::isValidMove_King(Type type,int fromRow, int fromCol, int toRow,
             (rowDiff == 0 && colDiff == 1) ||  // Horizontal move
             (rowDiff == 1 && colDiff == 1))    // Diagonal move
         {
-            // Check for collision with other pieces
-            if (!board.getPiece(toRow, toCol).isEmpty()) {
-                // Capture the piece at the destination and delete the piece
-//                board.removePiece(toRow, toCol);
-            }
-
-            qDebug() << board.getPieceType(fromRow, fromCol) << board.getPieceType(toRow, toCol);
-
             return true;
         }
     }
@@ -157,6 +150,29 @@ bool ChessPiece::isValidMove_Pawn( int fromRow, int fromCol, int toRow, int toCo
     {
         return true;
     }
+
+    return false;
+}
+
+bool ChessPiece::isValidMove_Knight(int fromRow, int fromCol, int toRow, int toCol, const ChessBoard &board) const
+{
+        // Knight logic
+        // Night moves in L pattern
+
+        // Move up-left (two row up one left)
+        // Move up-right (two row up one right)
+        // Move bottom-left (two row down one left)
+        // Move bottom-right (two row down one right)
+        if(fromRow == toRow && fromCol == toCol)
+            return false;
+
+        int rowDiff = (toRow > fromRow) ? (toRow - fromRow) : (fromRow - toRow);
+        int colDiff = (toCol > fromCol) ? (toCol - fromCol) : (fromCol - toCol);
+
+        if ((rowDiff == 2 && colDiff == 1) || (rowDiff == 1 && colDiff == 2)){
+            // Valid Knight Move
+            return true;
+        }
 
     return false;
 }
