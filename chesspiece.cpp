@@ -119,7 +119,7 @@ bool ChessPiece::isValidMove_Pawn( int fromRow, int fromCol, int toRow, int toCo
         }
         else if (rowDiff==2 && fromRow==1)// check if piece is moving 2 squares from initial position.
         {
-            if (!board.isSquareOccupied(toRow,toCol))
+            if (!board.isSquareOccupied(toRow,toCol) && !board.isSquareOccupied(fromRow + 1, fromCol))
                 return true;
         }
     }
@@ -133,13 +133,13 @@ bool ChessPiece::isValidMove_Pawn( int fromRow, int fromCol, int toRow, int toCo
         }
         else if (rowDiff==-2 && fromRow==6)// check if piece is moving 2 squares from initial position.
         {
-            if (!board.isSquareOccupied(toRow,toCol))
+            if (!board.isSquareOccupied(toRow,toCol) && !board.isSquareOccupied(fromRow - 1, fromCol))
                 return true;
         }
     }
     // Diagonal capture conditions.
     else if ((colDiff == 1 || colDiff == -1) && rowDiff == 1 &&
-             board.getPieceColor(fromRow,fromCol)==Black &&
+             board.getPieceColor(fromRow,fromCol) == Black &&
              board.isSquareOccupied(toRow,toCol))
     {
         return true;

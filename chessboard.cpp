@@ -96,7 +96,7 @@ bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int t
         break;
     case Pawn:
         qDebug()<<"pawn VALIDMOVE";
-        return isValidMove_Pawn(fromRow,fromCol,toRow,toCol,*this);
+        return isValidMove_Pawn(fromRow, fromCol, toRow, toCol, *this);
         break;
     default:
         return false;

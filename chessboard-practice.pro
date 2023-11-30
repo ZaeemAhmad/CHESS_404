@@ -12,12 +12,14 @@ SOURCES += \
     chessboard.cpp \
     chessboardwidget.cpp \
     chesspiece.cpp \
+    game.cpp \
     main.cpp
 
 HEADERS += \
     chessboard.h \
     chessboardwidget.h \
-    chesspiece.h
+    chesspiece.h \
+    game.h
 
 FORMS += \
     chessboardwidget.ui

@@ -8,6 +8,7 @@
 #include<QMouseEvent>
 #include <chesspiece.h>
 #include <chessboard.h>
+#include "game.h"
 
 class ChessBoardWidget : public QWidget {
     Q_OBJECT
@@ -27,6 +28,7 @@ private:
     QPixmap whitePawnPixmap, whiteRookPixmap, whiteKnightPixmap, whiteBishopPixmap, whiteQueenPixmap, whiteKingPixmap;
     QPixmap blackPawnPixmap, blackRookPixmap, blackKnightPixmap, blackBishopPixmap, blackQueenPixmap, blackKingPixmap;
     ChessBoard* chessBoard;
+    Game* game;
     QPixmap draggedPiece;
     QPoint dragStartPosition;
     ChessPiece::Type currentPieceType; // Stores the Type of current Piece on the board for moving it around the board

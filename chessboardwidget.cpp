@@ -33,7 +33,8 @@ ChessBoardWidget::ChessBoardWidget(QWidget* parent) : QWidget(parent) {
 
     // Instance of ChessBoard class
     chessBoard = new ChessBoard();
-    chessBoard->initialBoard();
+    game = new Game(chessBoard);
+//    chessBoard->initialBoard();
 }
 
 ChessBoardWidget::~ChessBoardWidget()
@@ -154,10 +155,12 @@ void ChessBoardWidget::mouseReleaseEvent(QMouseEvent *event)
         chessBoard->setPieceType(dragStartRow, dragStartCol, currentPieceType);
 
         if(isValidChessSquare(row, col)){
-            chessBoard->movePiece(dragStartRow, dragStartCol, row, col);
+//            chessBoard->movePiece(dragStartRow, dragStartCol, row, col);
+            game->makeMove(dragStartRow, dragStartCol, row, col);
             // Todo: Validation check
             qDebug() << "Dropped at row: " << row << " column: " << col;
         }
+//        game->getPiece(dragStartRow, dragStartCol);
 
         isDragging = false;
         update(); // Updating the board
