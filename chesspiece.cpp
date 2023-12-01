@@ -109,7 +109,7 @@ bool ChessPiece::isValidMove_Pawn( int fromRow, int fromCol, int toRow, int toCo
     int rowDiff=toRow-fromRow, colDiff=toCol-fromCol;
     if ( board.getPieceColor(fromRow,fromCol)==Black && colDiff==0)//check if piece is black and moving stright or not.
     {
-        qDebug()<<"black";
+        //        qDebug()<<"black";
         if (rowDiff==1)//check if piece is moving only one square
         {
             if (!board.isSquareOccupied(toRow,toCol))// check if destination square is occupied or not.
@@ -125,7 +125,7 @@ bool ChessPiece::isValidMove_Pawn( int fromRow, int fromCol, int toRow, int toCo
     }
     else if ( board.getPieceColor(fromRow,fromCol)==White && colDiff==0)//check if white and moving stright or not.
     {
-        qDebug()<<"white";
+        //        qDebug()<<"white";
         if (rowDiff == -1)//check if piece is moving only one square
         {
             if (!board.isSquareOccupied(toRow,toCol))// check if destination square is occupied or not.
@@ -154,27 +154,82 @@ bool ChessPiece::isValidMove_Pawn( int fromRow, int fromCol, int toRow, int toCo
     return false;
 }
 
+//<<<<<<< Updated upstream
 bool ChessPiece::isValidMove_Knight(int fromRow, int fromCol, int toRow, int toCol, const ChessBoard &board) const
 {
-        // Knight logic
-        // Night moves in L pattern
+    // Knight logic
+    // Night moves in L pattern
 
-        // Move up-left (two row up one left)
-        // Move up-right (two row up one right)
-        // Move bottom-left (two row down one left)
-        // Move bottom-right (two row down one right)
-        if(fromRow == toRow && fromCol == toCol)
-            return false;
+    // Move up-left (two row up one left)
+    // Move up-right (two row up one right)
+    // Move bottom-left (two row down one left)
+    // Move bottom-right (two row down one right)
+    if(fromRow == toRow && fromCol == toCol)
+        return false;
 
-        int rowDiff = (toRow > fromRow) ? (toRow - fromRow) : (fromRow - toRow);
-        int colDiff = (toCol > fromCol) ? (toCol - fromCol) : (fromCol - toCol);
+    int rowDiff = (toRow > fromRow) ? (toRow - fromRow) : (fromRow - toRow);
+    int colDiff = (toCol > fromCol) ? (toCol - fromCol) : (fromCol - toCol);
 
-        if ((rowDiff == 2 && colDiff == 1) || (rowDiff == 1 && colDiff == 2)){
-            // Valid Knight Move
-            return true;
-        }
+    if ((rowDiff == 2 && colDiff == 1) || (rowDiff == 1 && colDiff == 2)){
+        // Valid Knight Move
+        return true;
+    }
 
     return false;
+}
+//=======
+bool ChessPiece::isValidMove_Bishop( int fromRow, int fromCol, int toRow, int toCol, const ChessBoard& board) const
+{
+    int rowDiff=toRow-fromRow, colDiff=toCol-fromCol;
+    int RowDiff_positive=(rowDiff<0)?(rowDiff*-1):(rowDiff),ColDiff_positive=(colDiff<0)?(colDiff*-1):(colDiff);
+    if ( RowDiff_positive == ColDiff_positive)
+    {
+        if (rowDiff>0 && colDiff>0)
+        {
+            for (int i=fromRow+1,j=fromCol+1; i<toRow && j<toCol; i++,j++)
+            {
+                if (board.isSquareOccupied(i,j))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        else if (rowDiff<0 && colDiff<0)
+        {
+            for (int i=fromRow-1, j=fromCol-1; i>toRow && j>toCol; i--, j-- )
+            {
+                if(board.isSquareOccupied(i,j))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        else if (rowDiff<0 && colDiff>0)
+        {
+            for (int i=fromRow-1, j=fromCol+1; i>toRow && j<toCol; i--, j++ )
+            {
+                if (board.isSquareOccupied(i,j))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        else if (rowDiff>0 && colDiff<0)
+        {
+            for (int i=fromRow+1 ,j=fromCol-1; i<toRow && j>toCol; i++,j-- )
+            {
+                if (board.isSquareOccupied(i,j))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+        return false;
 }
 
 // isValidCapture returns true if colors are same.

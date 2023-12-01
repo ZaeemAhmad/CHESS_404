@@ -92,11 +92,16 @@ bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int t
         return isValidMove_King( type,  fromRow,fromCol,  toRow,  toCol, *this);
         break;
     case Bishop:
-        return true;
+        return isValidMove_Bishop(fromRow,fromCol,toRow,toCol,*this);
         break;
     case Pawn:
+//<<<<<<< Updated upstream
         qDebug()<<"pawn VALIDMOVE";
         return isValidMove_Pawn(fromRow, fromCol, toRow, toCol, *this);
+//=======
+//        qDebug()<<"pawn VALIDMOVE";
+        return isValidMove_Pawn(fromRow,fromCol,toRow,toCol,*this);
+//>>>>>>> Stashed changes
         break;
     default:
         return false;
