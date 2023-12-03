@@ -1,5 +1,6 @@
 #include "chessboardwidget.h"
 #include <QPainter>
+#include <QMessageBox>
 
 ChessBoardWidget::ChessBoardWidget(QWidget* parent) : QWidget(parent) {
     setFixedSize(700, 700);
@@ -31,11 +32,46 @@ ChessBoardWidget::ChessBoardWidget(QWidget* parent) : QWidget(parent) {
     blackPawnPixmap = QPixmap::fromImage(spritesheetImage.copy(5 * pieceWidth, pieceHeight, pieceWidth, pieceHeight));
     // _____________________ All pieces are loaded and saved into variables
 
+
     // Instance of ChessBoard class
     chessBoard = new ChessBoard();
     game = new Game(chessBoard);
     chessBoard->setList();
 //    chessBoard->initialBoard();
+
+    // Syntax: connect(sender, SIGNAL(something changed), receiver, SLOT(result of that change));
+    QObject::connect(game, &Game::whiteTimerUpdated, this, &ChessBoardWidget::updateWhiteTimerSlot);
+    QObject::connect(game, &Game::blackTimerUpdated, this, &ChessBoardWidget::updateBlackTimerSlot);
+    QObject::connect(&playerTimer, &QTimer::timeout, this, &ChessBoardWidget::updateGUI);
+
+    playerTimer.setInterval(1000);
+
+    // Gui for timer
+    whiteTimerLCD = new QLCDNumber(this);
+    blackTimerLCD = new QLCDNumber(this);
+
+    whiteTimerLCD->setFixedSize(100, 50);
+    blackTimerLCD->setFixedSize(100, 50);
+
+    // Remove the frame around the LCD numbers
+    whiteTimerLCD->setFrameStyle(QFrame::NoFrame);
+    blackTimerLCD->setFrameStyle(QFrame::NoFrame);
+
+    // Removes the stroke
+    whiteTimerLCD->setSegmentStyle(QLCDNumber::Flat);
+    blackTimerLCD->setSegmentStyle(QLCDNumber::Flat);
+
+    // Set the background color to transparent
+    whiteTimerLCD->setStyleSheet("color: rgba(0, 0, 0, 0.4)");
+    blackTimerLCD->setStyleSheet("color: rgba(0, 0, 0, 0.4)");
+
+    // Creates a layout and add the timer labels
+    timerLayout = new QHBoxLayout(this);
+    timerLayout->addWidget(whiteTimerLCD, 0, Qt::AlignCenter);
+    timerLayout->addWidget(blackTimerLCD, 0, Qt::AlignCenter);
+
+    setLayout(timerLayout);
+    playerTimer.start();
 }
 
 ChessBoardWidget::~ChessBoardWidget()
@@ -43,7 +79,52 @@ ChessBoardWidget::~ChessBoardWidget()
     delete chessBoard;
 }
 
+void ChessBoardWidget::endGame(const QString &winner)
+{
+    playerTimer.stop();
+
+    QMessageBox::information(this, "Game Over", winner + " won!");
+}
+
+void ChessBoardWidget::updateGUI()
+{
+    int whiteRemainingTime = game->getWhiteTimer().secsTo(QTime(0, 0));
+    int blackRemainingTime = game->getBlackTimer().secsTo(QTime(0, 0));
+
+    whiteTimerLCD->display(QString("%1:%2").arg(qAbs(whiteRemainingTime) / 60, 2, 10, QLatin1Char('0')).arg(qAbs(whiteRemainingTime) % 60, 2, 10, QLatin1Char('0')));
+    blackTimerLCD->display(QString("%1:%2").arg(qAbs(blackRemainingTime) / 60, 2, 10, QLatin1Char('0')).arg(qAbs(blackRemainingTime) % 60, 2, 10, QLatin1Char('0')));
+}
+
+void ChessBoardWidget::updateWhiteTimerSlot(QTime timer)
+{
+    int minutes = timer.minute();
+    int seconds = timer.second();
+    // Checks if the time is up each time
+    checkTimerSlot();
+    whiteTimerLCD->display(QString("%1:%2").arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')));
+}
+
+void ChessBoardWidget::updateBlackTimerSlot(QTime timer)
+{
+    int minutes = timer.minute();
+    int seconds = timer.second();
+    // Checks if the time is up each time
+    checkTimerSlot();
+    blackTimerLCD->display(QString("%1:%2").arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')));
+}
+
+void ChessBoardWidget::checkTimerSlot()
+{
+    // If the timer is at 00:00 the game ends
+    if(game->getCurrentPlayer() == ChessPiece::Color::White && game->getWhiteTimer() == QTime(0, 0)){
+        endGame("Black Player");
+    }else if (game->getCurrentPlayer() == ChessPiece::Color::Black && game->getBlackTimer() == QTime(0, 0)) {
+        endGame("White Player");
+    }
+}
+
 void ChessBoardWidget::paintEvent(QPaintEvent* event) {
+    // Initializes the gui
     Q_UNUSED(event);
     QPainter painter(this);
     drawChessBoard(painter);
@@ -78,7 +159,7 @@ void ChessBoardWidget::drawChessPiece(QPainter& painter, int row, int col, const
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
 
-    // Use high-quality interpolation mode
+    // high-quality interpolation mode
     painter.setRenderHint(QPainter::TextAntialiasing, true);
 
     painter.drawPixmap(col * squareSize, row * squareSize, squareSize, squareSize, pixmap);
@@ -125,11 +206,9 @@ void ChessBoardWidget::mousePressEvent(QMouseEvent *event)
                 dragStartRow = row;
                 dragStartCol = col;
                 currentPieceType = chessBoard->getPieceType(dragStartRow, dragStartCol);
-                //           // Capture the piece to be dragged
+                // Capture the piece to be dragged
                 dragStartPosition = event->pos();
-                //            qDebug() << "Start postion" << dragStartPosition;
                 draggedPiece = getPiecePixmap(chessBoard->getPiece(row, col).getType(), chessBoard->getPiece(row, col).getColor());
-                //            qDebug() << "Dragged Piece: " << draggedPiece;
                 isDragging = true;
                 chessBoard->setPieceType(dragStartRow, dragStartCol, ChessPiece::Type::Empty);
             }
@@ -156,13 +235,10 @@ void ChessBoardWidget::mouseReleaseEvent(QMouseEvent *event)
         chessBoard->setPieceType(dragStartRow, dragStartCol, currentPieceType);
 
         if(isValidChessSquare(row, col)){
-//            chessBoard->movePiece(dragStartRow, dragStartCol, row, col);
             game->makeMove(dragStartRow, dragStartCol, row, col);
-            qDebug() << "Dropped at row: " << row << " column: " << col;
         }
-//        game->getPiece(dragStartRow, dragStartCol);
-
         isDragging = false;
+        playerTimer.stop();
         update(); // Updating the board
 
     }

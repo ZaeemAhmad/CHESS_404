@@ -163,8 +163,8 @@ void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
     if ( isValidChessSquare(fromRow, fromCol) && isValidChessSquare(toRow, toCol) )
     {
 
-        const /*ChessPiece::*/Color currentPieceColor =getPieceColor(fromRow, fromCol);
-        const /*ChessPiece::*/Color nextPositionPieceColor = getPieceColor(toRow, toCol);
+        const Color currentPieceColor =getPieceColor(fromRow, fromCol);
+        const Color nextPositionPieceColor = getPieceColor(toRow, toCol);
         // this condition prevents same color pieces to move upon them.
         // is condition ki waja sy same color ky pieces ek dosry ko capture nai kar skty.
         qDebug()<<"Origin: "<<fromRow<<", "<<fromCol<<"\nDestination: "<<toRow<<", "<<toCol;

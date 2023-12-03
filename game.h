@@ -1,17 +1,38 @@
+// game.h
 #ifndef GAME_H
 #define GAME_H
 
 #include "chessboard.h"
+#include <QTime>
+#include <QTimer>
 
-class Game
+class Game : public QObject
 {
+    Q_OBJECT
 public:
-    Game(ChessBoard* chessboard);
+    Game(ChessBoard* chessboard, QObject *parent = nullptr);
 
     void makeMove(int fromRow, int fromCol, int toRow, int toCol);
+    ChessPiece::Color getCurrentPlayer() const;
+    QTime getWhiteTimer() const;
+    QTime getBlackTimer() const;
+
+public slots:
+    void updateWhiteTimer();
+    void updateBlackTimer();
+
+signals:
+    // Signals indicate that something is changed
+    void whiteTimerUpdated(QTime timer);
+    void blackTimerUpdated(QTime timer);
+
 private:
     ChessBoard* chessboard;
     ChessPiece::Color currentPlayer;
+    QTime whiteTimer;
+    QTime blackTimer;
+    QTimer whiteTimerUpdateTimer;
+    QTimer blackTimerUpdateTimer;
 };
 
 #endif // GAME_H
