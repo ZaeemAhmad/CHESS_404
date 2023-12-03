@@ -95,13 +95,7 @@ bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int t
         return isValidMove_Bishop(fromRow,fromCol,toRow,toCol,*this);
         break;
     case Pawn:
-//<<<<<<< Updated upstream
-        qDebug()<<"pawn VALIDMOVE";
         return isValidMove_Pawn(fromRow, fromCol, toRow, toCol, *this);
-//=======
-//        qDebug()<<"pawn VALIDMOVE";
-        return isValidMove_Pawn(fromRow,fromCol,toRow,toCol,*this);
-//>>>>>>> Stashed changes
         break;
     default:
         return false;
@@ -117,8 +111,8 @@ void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
     if ( isValidChessSquare(fromRow, fromCol) && isValidChessSquare(toRow, toCol) )
     {
 
-        const /*ChessPiece::*/Color currentPieceColor =getPieceColor(fromRow, fromCol);
-        const /*ChessPiece::*/Color nextPositionPieceColor = getPieceColor(toRow, toCol);
+        const Color currentPieceColor =getPieceColor(fromRow, fromCol);
+        const Color nextPositionPieceColor = getPieceColor(toRow, toCol);
         // this condition prevents same color pieces to move upon them.
         // is condition ki waja sy same color ky pieces ek dosry ko capture nai kar skty.
         qDebug()<<"Origin: "<<fromRow<<", "<<fromCol<<"\nDestination: "<<toRow<<", "<<toCol;

@@ -109,13 +109,10 @@ bool ChessPiece::isValidMove_Pawn( int fromRow, int fromCol, int toRow, int toCo
     int rowDiff=toRow-fromRow, colDiff=toCol-fromCol;
     if ( board.getPieceColor(fromRow,fromCol)==Black && colDiff==0)//check if piece is black and moving stright or not.
     {
-        //        qDebug()<<"black";
         if (rowDiff==1)//check if piece is moving only one square
         {
             if (!board.isSquareOccupied(toRow,toCol))// check if destination square is occupied or not.
                 return true;
-            //            else
-            //                return false;
         }
         else if (rowDiff==2 && fromRow==1)// check if piece is moving 2 squares from initial position.
         {
@@ -125,7 +122,6 @@ bool ChessPiece::isValidMove_Pawn( int fromRow, int fromCol, int toRow, int toCo
     }
     else if ( board.getPieceColor(fromRow,fromCol)==White && colDiff==0)//check if white and moving stright or not.
     {
-        //        qDebug()<<"white";
         if (rowDiff == -1)//check if piece is moving only one square
         {
             if (!board.isSquareOccupied(toRow,toCol))// check if destination square is occupied or not.
@@ -154,7 +150,6 @@ bool ChessPiece::isValidMove_Pawn( int fromRow, int fromCol, int toRow, int toCo
     return false;
 }
 
-//<<<<<<< Updated upstream
 bool ChessPiece::isValidMove_Knight(int fromRow, int fromCol, int toRow, int toCol, const ChessBoard &board) const
 {
     // Knight logic
@@ -177,7 +172,7 @@ bool ChessPiece::isValidMove_Knight(int fromRow, int fromCol, int toRow, int toC
 
     return false;
 }
-//=======
+
 bool ChessPiece::isValidMove_Bishop( int fromRow, int fromCol, int toRow, int toCol, const ChessBoard& board) const
 {
     int rowDiff=toRow-fromRow, colDiff=toCol-fromCol;

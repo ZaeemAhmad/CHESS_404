@@ -1,9 +1,32 @@
 #include "game.h"
 
-Game::Game(ChessBoard* chessboard) : chessboard(chessboard)
+
+Game::Game(ChessBoard* chessboard, QObject *parent) : QObject(parent), chessboard(chessboard)
 {
+    whiteTimer.setHMS(0, 0, 10);
+    blackTimer.setHMS(0, 0, 10);
     chessboard->initialBoard();
     currentPlayer = ChessPiece::White;
+    QObject::connect(&whiteTimerUpdateTimer, &QTimer::timeout, this, &Game::updateWhiteTimer);
+    QObject::connect(&blackTimerUpdateTimer, &QTimer::timeout, this, &Game::updateBlackTimer);
+
+}
+
+// Add slots to update the timers
+void Game::updateWhiteTimer()
+{
+    if (currentPlayer == ChessPiece::Color::White && whiteTimer > QTime(0, 0)) {
+        whiteTimer = whiteTimer.addSecs(-1);
+        emit whiteTimerUpdated(whiteTimer);
+    }
+}
+
+void Game::updateBlackTimer()
+{
+    if (currentPlayer == ChessPiece::Color::Black && blackTimer > QTime(0, 0)) {
+        blackTimer = blackTimer.addSecs(-1);
+        emit blackTimerUpdated(blackTimer);
+    }
 }
 
 void Game::makeMove(int fromRow, int fromCol, int toRow, int toCol)
@@ -16,6 +39,35 @@ void Game::makeMove(int fromRow, int fromCol, int toRow, int toCol)
             chessboard->movePiece(fromRow, fromCol, toRow, toCol);
             // Switches the turn
             currentPlayer = (currentPlayer == ChessPiece::Color::White) ? ChessPiece::Color::Black : ChessPiece::Color::White;
+
+            // Starts the timer only when the first move is made
+            blackTimerUpdateTimer.start(1000);
+            whiteTimerUpdateTimer.start(1000);
+
+            if(currentPlayer == ChessPiece::Color::White){
+                qDebug() << "white timer: " << whiteTimer;
+                blackTimerUpdateTimer.start(1000);
+
+            }else{
+                qDebug() << "black timer: " << blackTimer;
+                whiteTimerUpdateTimer.start(1000);
+
+            }
         }
     }
+}
+
+ChessPiece::Color Game::getCurrentPlayer() const
+{
+    return currentPlayer;
+}
+
+QTime Game::getWhiteTimer() const
+{
+    return whiteTimer;
+}
+
+QTime Game::getBlackTimer() const
+{
+    return blackTimer;
 }
