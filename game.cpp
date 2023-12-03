@@ -3,8 +3,8 @@
 
 Game::Game(ChessBoard* chessboard, QObject *parent) : QObject(parent), chessboard(chessboard)
 {
-    whiteTimer.setHMS(0, 0, 10);
-    blackTimer.setHMS(0, 0, 10);
+    whiteTimer.setHMS(0, 5, 0);
+    blackTimer.setHMS(0, 5, 0);
     chessboard->initialBoard();
     currentPlayer = ChessPiece::White;
     QObject::connect(&whiteTimerUpdateTimer, &QTimer::timeout, this, &Game::updateWhiteTimer);

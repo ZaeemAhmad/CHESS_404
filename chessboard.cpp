@@ -2,10 +2,7 @@
 #include <QDebug>
 
 int ChessBoard::onlyOnce=0;
-ChessBoard::ChessBoard()
-{
-    initialBoard();
-}
+ChessBoard::ChessBoard() {}
 
 void ChessBoard::initialBoard()
 {
@@ -41,12 +38,14 @@ void ChessBoard::initialBoard()
                     break;
                 }
                 board[row][col] = ChessPiece(type, color);
+                setList(board[row][col], row, col);
             }
             else if (row == 1 || row == 6) {
                 // Placing pawns
                 ChessPiece::Color color = (row == 1) ? ChessPiece::Color::Black : ChessPiece::Color::White;
                 ChessPiece::Type type = ChessPiece::Type::Pawn;
                 board[row][col] = ChessPiece(type, color);
+                setList(board[row][col], row, col);
             }
             else
             {
@@ -65,25 +64,18 @@ void ChessBoard::setPieceType(int row, int col, ChessPiece::Type type)
     }
 }
 
-void ChessBoard::setList()
+void ChessBoard::setList(ChessPiece board, int row, int col)
 {
-    if (onlyOnce==0)
-    {
-        for (int row=0;row<8;row++)
-        {
-            for (int col=0;col<8;col++)
-            {
-                if (row<=1 || row >=6)
-                {
-                    if  (row<=1)
-                    { black.insertPiece(board[row][col],row,col); }
-                    else if (row>=6)
-                    { white.insertPiece(board[row][col],row,col); }
-                }
-            }
-        }
+    if ( row >= 0 && row < 2 )
+    { black.insertPiece(board, row, col);
+        black.display(row, col);
+        qDebug() << "called" << board.getType() << row << col;
     }
-    onlyOnce++;
+    else if ( row >= 5 && row < 8)
+    { white.insertPiece(board, row, col);
+        white.display(row, col);
+        qDebug() << "called1" << board.getType() << row << col;
+    }
 }
 
 bool ChessBoard::CHECK()
@@ -157,6 +149,8 @@ bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int t
 void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
 {
     displayLinkList();
+    white.displayAll();
+    black.displayAll();
 
     // Chess Move implementation logic
     // Checking if the move is valid before upadating the board
@@ -179,6 +173,8 @@ void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
             }
         }
     }
+    white.display(toRow, toCol);
+    black.display(toRow, toCol);
 }
 
 bool ChessBoard::isSquareOccupied(int row, int col) const

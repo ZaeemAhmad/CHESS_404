@@ -28,6 +28,7 @@ public:
     link_list();
     void insertPiece(ChessPiece pieceFromCall, int ROW, int COL)
     {
+        // Stores every piece on the board with its coordinates
         if  (head==nullptr)
         {
             head = new Node(pieceFromCall);
@@ -87,6 +88,15 @@ public:
         }
     }
 
+    void displayAll(){
+        qDebug() << "display all";
+        Node* temp = head;
+        while(temp){
+            qDebug() << temp->PieceGet().getType() << "at row & col " <<  temp->RowGet() << temp->ColGet();
+            temp = temp->NextGet();
+        }
+    }
+
     void display(int row,int col)
     {
         Node* temp=head;
@@ -96,9 +106,10 @@ public:
         }
         if (temp->RowGet()==row && temp->ColGet()==col)
         {
+            qDebug() << "in";
             ChessPiece tempPiece=temp->PieceGet();
             ChessPiece::Color tempColor=tempPiece.getColor();
-            qDebug()<<"type: "<<tempPiece.getType()<<", Color: "<<tempColor;
+            qDebug()<<"type: "<<tempPiece.getType()<<", Color: "<<tempColor << "at row & col" << row << col;
         }
     }
 };

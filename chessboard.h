@@ -13,7 +13,7 @@ public:
     static int onlyOnce;
 
     void updateLinkList(Color currentPieceColor,Color nextPieceColor,int fromRow,int fromCol,int toRow,int toCol);
-    void setList();
+    void setList(ChessPiece board, int row, int col);
     bool CHECK();
 //temporary function for checking
     void displayLinkList();

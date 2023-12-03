@@ -36,7 +36,7 @@ ChessBoardWidget::ChessBoardWidget(QWidget* parent) : QWidget(parent) {
     // Instance of ChessBoard class
     chessBoard = new ChessBoard();
     game = new Game(chessBoard);
-    chessBoard->setList();
+//    chessBoard->setList();
 //    chessBoard->initialBoard();
 
     // Syntax: connect(sender, SIGNAL(something changed), receiver, SLOT(result of that change));
