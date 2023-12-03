@@ -107,7 +107,7 @@ bool ChessPiece::isValidMove_Queen(Type type, int fromRow,int fromCol,int toRow,
     int rowDiff = toRow - fromRow;                               //This is used to move diagonally.
     int colDiff = toCol - fromCol;
     int i;
-    if(type==Queen){
+
 
     if(fromCol==toCol && fromRow==toRow)
         return false;                  //case when piece dropped in same location.
@@ -152,7 +152,7 @@ bool ChessPiece::isValidMove_Queen(Type type, int fromRow,int fromCol,int toRow,
 
     //return false; // Not a valid move (neither horizontal, vertical, nor diagonal)
 
-    }
+
     // Moved Diagonally
     else if (abs(rowDiff) ==abs(colDiff))
     {
@@ -172,8 +172,9 @@ bool ChessPiece::isValidMove_Queen(Type type, int fromRow,int fromCol,int toRow,
 
     return true; // return true if the path is clear
     }
+
     else{
-                return false;
+    return false;
     }
 }
 
