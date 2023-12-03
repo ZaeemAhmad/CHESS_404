@@ -24,7 +24,6 @@ public:
 //=======
     //<<<<<<< Updated upstream
 
-    bool isValidMove_King(Type type,int fromRow, int fromCol, int toRow, int toCol, ChessBoard& board) const;
     bool isValidMove_Queen(Type type,int fromRow,int fromCol,int toRow,int toCol,ChessBoard &board)const;
 
     //=======
