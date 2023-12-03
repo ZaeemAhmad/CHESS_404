@@ -1,5 +1,7 @@
 #include "chessboard.h"
 #include <QDebug>
+
+int ChessBoard::onlyOnce=0;
 ChessBoard::ChessBoard()
 {
     initialBoard();
@@ -38,7 +40,6 @@ void ChessBoard::initialBoard()
                     type = ChessPiece::Type::Pawn;
                     break;
                 }
-
                 board[row][col] = ChessPiece(type, color);
             }
             else if (row == 1 || row == 6) {
@@ -46,7 +47,8 @@ void ChessBoard::initialBoard()
                 ChessPiece::Color color = (row == 1) ? ChessPiece::Color::Black : ChessPiece::Color::White;
                 ChessPiece::Type type = ChessPiece::Type::Pawn;
                 board[row][col] = ChessPiece(type, color);
-            } else
+            }
+            else
             {
                 // Empty Squares in the middle
                 ChessPiece::Type type = ChessPiece::Type::Empty;
@@ -61,6 +63,54 @@ void ChessBoard::setPieceType(int row, int col, ChessPiece::Type type)
     if (isValidChessSquare(row, col)) {
         board[row][col].setType(type);
     }
+}
+
+void ChessBoard::setList()
+{
+    if (onlyOnce==0)
+    {
+        for (int row=0;row<8;row++)
+        {
+            for (int col=0;col<8;col++)
+            {
+                if (row<=1 || row >=6)
+                {
+                    if  (row<=1)
+                    { black.insertPiece(board[row][col],row,col); }
+                    else if (row>=6)
+                    { white.insertPiece(board[row][col],row,col); }
+                }
+            }
+        }
+    }
+    onlyOnce++;
+}
+
+bool ChessBoard::CHECK()
+{
+    return true;
+}
+void ChessBoard::updateLinkList(Color currentPieceColor, Color nextPieceColor, int fromRow, int fromCol, int toRow, int toCol)
+{
+    if (nextPieceColor==NONE)
+    {
+        (currentPieceColor==Black)?(black.updatePiece(fromRow,fromCol,toRow,toCol)):(white.updatePiece(fromRow,fromCol,toRow,toCol));
+    }
+    else if (nextPieceColor==White)
+    {
+        white.deletePiece(toRow,toCol);
+        black.updatePiece(fromRow,fromCol,toRow,toCol);
+    }
+    else if (nextPieceColor==Black)
+    {
+        black.deletePiece(toRow,toCol);
+        white.updatePiece(fromRow,fromCol,toRow,toCol);
+    }
+}
+
+void ChessBoard::displayLinkList()
+{
+    black.display(0,4);
 }
 
 void ChessBoard::removePiece(int row, int col)
@@ -95,13 +145,7 @@ bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int t
         return isValidMove_Bishop(fromRow,fromCol,toRow,toCol,*this);
         break;
     case Pawn:
-//<<<<<<< Updated upstream
-        qDebug()<<"pawn VALIDMOVE";
-        return isValidMove_Pawn(fromRow, fromCol, toRow, toCol, *this);
-//=======
-//        qDebug()<<"pawn VALIDMOVE";
         return isValidMove_Pawn(fromRow,fromCol,toRow,toCol,*this);
-//>>>>>>> Stashed changes
         break;
     default:
         return false;
@@ -112,6 +156,8 @@ bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int t
 
 void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
 {
+    displayLinkList();
+
     // Chess Move implementation logic
     // Checking if the move is valid before upadating the board
     if ( isValidChessSquare(fromRow, fromCol) && isValidChessSquare(toRow, toCol) )
@@ -126,6 +172,7 @@ void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
         {
             if ( VALIDMOVE(getPieceType(fromRow,fromCol), fromRow, fromCol, toRow, toCol) )
             {
+                updateLinkList(currentPieceColor,nextPositionPieceColor,fromRow,fromCol,toRow,toCol);
                 ChessPiece pieceToMove = board[fromRow][fromCol];
                 board[fromRow][fromCol] = ChessPiece(); // To clear the current square
                 board[toRow][toCol] = pieceToMove; // Move the piece to the position

@@ -1,15 +1,22 @@
 #ifndef CHESSBOARD_H
 #define CHESSBOARD_H
-
+#pragma once
 #include "chesspiece.h"
-
+#include"link_list.h"
 class ChessBoard :public ChessPiece
 {
 public:
     ChessBoard();
-
     void initialBoard();
     void setPieceType(int row, int col, Type t);
+    link_list white,black;
+    static int onlyOnce;
+
+    void updateLinkList(Color currentPieceColor,Color nextPieceColor,int fromRow,int fromCol,int toRow,int toCol);
+    void setList();
+    bool CHECK();
+//temporary function for checking
+    void displayLinkList();
 
     // Piece Movement Logic
     void movePiece(int fromRow, int fromCol, int toRow, int toCol);
@@ -29,5 +36,5 @@ public:
 private:
     ChessPiece board[8][8];
 };
-
+//bool ChessBoard::onlyOnce=1;
 #endif // CHESSBOARD_H
