@@ -112,41 +112,42 @@ bool ChessPiece::isValidMove_Queen(Type type, int fromRow,int fromCol,int toRow,
     if(fromCol==toCol && fromRow==toRow)
         return false;                  //case when piece dropped in same location.
 
-                                     //Collision Detection Conditions
+    //Collision Detection Conditions
     if(fromRow==toRow){
-                                  //Moved Horizontally
+        //Moved Horizontally
         if(fromCol<toCol){
-                                     //Then move right
-                for(i=fromCol+1;i<toCol;i++){
-                    if(!board.getPiece(fromRow,i).isEmpty())    //getPiece returns the piece reference at current row and col.
-                        return  isValidCapture(fromRow,fromCol,toRow,toCol,board); // isValidCapture returns true if colors are same.
-                }
+            //Then move right
+            for(i=fromCol+1;i<toCol;i++){
+                if(!board.getPiece(fromRow,i).isEmpty())    //getPiece returns the piece reference at current row and col.
+                    return  isValidCapture(fromRow,fromCol,toRow,toCol,board); // isValidCapture returns true if colors are same.
+            }
         }
-                else{
-                    //Moved in left Position
-                    for(i=fromCol-1;i>toCol;i--){
-                        if(!board.getPiece(fromRow,i).isEmpty())
-                            return isValidCapture(fromRow,fromCol,toRow,toCol,board);
-                    }
+
+        else{
+            //Moved in left Position
+            for(i=fromCol-1;i>toCol;i--){
+                if(!board.getPiece(fromRow,i).isEmpty())
+                    return isValidCapture(fromRow,fromCol,toRow,toCol,board);
+            }
+        }
+    }else if (fromCol == toCol) {
+        // Move in Vertical Position.
+        if (fromRow < toRow) {
+            // Moved Down
+            for (int i = fromRow + 1; i < toRow; i++) {
+                if (!board.getPiece(i, fromCol).isEmpty()) {
+                    return isValidCapture(fromRow, fromCol, toRow, toCol, board);
                 }
-    }
-    else if (fromCol == toCol) {
-                // Move in Vertical Position.
-                if (fromRow < toRow) {
-                    // Moved Down
-                    for (i = fromRow + 1; i < toRow; i++) {
-                        if (!board.getPiece(i, fromCol).isEmpty()) {
-                            return isValidCapture(fromRow, fromCol, toRow, toCol, board);
-                        }
-                    }
-                } else {
-                    // Moved up
-                    for (i = fromRow - 1; i > toRow; i--) {
-                        if (!board.getPiece(i, fromCol).isEmpty()) {
-                            return isValidCapture(fromRow, fromCol, toRow, toCol, board);
-                        }
-                    }
+            }
+        } else {
+            // Moved up
+            for (int i = fromRow - 1; i > toRow; i--) {
+                if (!board.getPiece(i, fromCol).isEmpty()) {
+                    return isValidCapture(fromRow, fromCol, toRow, toCol, board);
                 }
+            }
+        }
+        return true; // return true if the path is clear
     }
 
 
@@ -156,25 +157,25 @@ bool ChessPiece::isValidMove_Queen(Type type, int fromRow,int fromCol,int toRow,
     // Moved Diagonally
     else if (abs(rowDiff) ==abs(colDiff))
     {
-    // this will determine the direction of movement
-    int rowIncrement = (rowDiff > 0) ? 1 : -1;
-    int colIncrement = (colDiff > 0) ? 1 : -1;
+        // this will determine the direction of movement
+        int rowIncrement = (rowDiff > 0) ? 1 : -1;
+        int colIncrement = (colDiff > 0) ? 1 : -1;
 
-    for (int i = fromRow + rowIncrement, j = fromCol + colIncrement;
-         i != toRow; i += rowIncrement, j += colIncrement)
-    {
+        for (int i = fromRow + rowIncrement, j = fromCol + colIncrement;
+             i != toRow; i += rowIncrement, j += colIncrement)
+        {
 
-                if (board.isSquareOccupied(i, j)) // Check if any square along the diagonal path is occupied
-                {
-                    return false; // if space is occupied then it is return false.
-                }
-    }
+            if (board.isSquareOccupied(i, j)) // Check if any square along the diagonal path is occupied
+            {
+                return false; // if space is occupied then it is return false.
+            }
+        }
 
-    return true; // return true if the path is clear
+        return true; // return true if the path is clear
     }
 
     else{
-    return false;
+        return false;
     }
 }
 
