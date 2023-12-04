@@ -25,6 +25,7 @@ public slots:
     void updateGUI();
     void updateWhiteTimerSlot(QTime timer);
     void updateBlackTimerSlot(QTime timer);
+    void pawnPromotionDialog(int fromRow, int toRow, int fromCol, int toCol);
 protected:
     // Gui based virtual functions overriden from QWidget
     void paintEvent(QPaintEvent* event) override;

@@ -2,7 +2,9 @@
 #include <QDebug>
 
 int ChessBoard::onlyOnce=0;
-ChessBoard::ChessBoard() {}
+ChessBoard::ChessBoard(QObject* parent) : QObject(parent) {}
+
+ChessBoard::~ChessBoard() {}
 
 void ChessBoard::initialBoard()
 {
@@ -137,12 +139,29 @@ bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int t
         return isValidMove_Bishop(fromRow,fromCol,toRow,toCol,*this);
         break;
     case Pawn:
-        return isValidMove_Pawn(fromRow,fromCol,toRow,toCol,*this);
+        if(isValidMove_Pawn(fromRow,fromCol,toRow,toCol,*this)){
+            if(!isPawnPromotion(fromRow, toRow, fromCol, toCol)){
+                return true;
+            }else{
+                // Emit pawn promotion signal
+                emit pawnPromotionSignal(fromRow, toRow, fromCol, toCol);
+                return true;
+            }
+        }
         break;
     default:
         return false;
         break;
     }
+}
+
+bool ChessBoard::isPawnPromotion(int fromRow, int toRow, int fromCol, int toCol)
+{
+    Color color = board[fromRow][fromCol].getColor();
+    if((color == Black && toRow == 7) || (color == White && toRow == 0)){
+        return true;
+    }
+    return false;
 }
 
 
@@ -157,7 +176,7 @@ void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
     if ( isValidChessSquare(fromRow, fromCol) && isValidChessSquare(toRow, toCol) )
     {
 
-        const Color currentPieceColor =getPieceColor(fromRow, fromCol);
+        const Color currentPieceColor = getPieceColor(fromRow, fromCol);
         const Color nextPositionPieceColor = getPieceColor(toRow, toCol);
         // this condition prevents same color pieces to move upon them.
         // is condition ki waja sy same color ky pieces ek dosry ko capture nai kar skty.

@@ -20,11 +20,13 @@ public:
 public slots:
     void updateWhiteTimer();
     void updateBlackTimer();
+    void pawnPromotionHandler(int fromRow, int toRow, int fromCol, int toCol);
 
 signals:
     // Signals indicate that something is changed
     void whiteTimerUpdated(QTime timer);
     void blackTimerUpdated(QTime timer);
+    void pawnPromotionGUI(int fromRow, int toRow, int fromCol, int toCol);
 
 private:
     ChessBoard* chessboard;

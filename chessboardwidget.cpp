@@ -1,4 +1,8 @@
 #include "chessboardwidget.h"
+
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QRadioButton>
 #include <QPainter>
 #include <QMessageBox>
 
@@ -43,6 +47,7 @@ ChessBoardWidget::ChessBoardWidget(QWidget* parent) : QWidget(parent) {
     QObject::connect(game, &Game::whiteTimerUpdated, this, &ChessBoardWidget::updateWhiteTimerSlot);
     QObject::connect(game, &Game::blackTimerUpdated, this, &ChessBoardWidget::updateBlackTimerSlot);
     QObject::connect(&playerTimer, &QTimer::timeout, this, &ChessBoardWidget::updateGUI);
+    QObject::connect(game, &Game::pawnPromotionGUI, this, &ChessBoardWidget::pawnPromotionDialog);
 
     playerTimer.setInterval(1000);
 
@@ -111,6 +116,66 @@ void ChessBoardWidget::updateBlackTimerSlot(QTime timer)
     // Checks if the time is up each time
     checkTimerSlot();
     blackTimerLCD->display(QString("%1:%2").arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')));
+}
+
+void ChessBoardWidget::pawnPromotionDialog(int fromRow, int toRow, int fromCol, int toCol)
+{
+    qDebug() << "dialog" << fromRow << toRow << fromCol << toCol;
+    QDialog dialog(this);
+    dialog.setWindowTitle("Pawn Promotion");
+    dialog.setFixedSize(200, 150);
+
+    QVBoxLayout* layout = new QVBoxLayout(&dialog);
+
+    QLabel* label = new QLabel("Choose a piece for promotion: ", &dialog);
+    layout->addWidget(label);
+
+    QRadioButton* queenButton = new QRadioButton("Queen", &dialog);
+    QRadioButton* rookButton = new QRadioButton("Rook", &dialog);
+    QRadioButton* bishopButton = new QRadioButton("Bishop", &dialog);
+    QRadioButton* knightButton = new QRadioButton("Knight", &dialog);
+
+    // Set pixmap for each radio button
+    queenButton->setIcon(QIcon(whiteQueenPixmap));
+    rookButton->setIcon(QIcon(whiteRookPixmap));
+    bishopButton->setIcon(QIcon(whiteBishopPixmap));
+    knightButton->setIcon(QIcon(whiteKnightPixmap));
+
+    // Connect the buttons to a slot or function to handle the chosen piece
+    connect(queenButton, &QRadioButton::clicked, &dialog, &QDialog::accept);
+    connect(rookButton, &QRadioButton::clicked, &dialog, &QDialog::accept);
+    connect(bishopButton, &QRadioButton::clicked, &dialog, &QDialog::accept);
+    connect(knightButton, &QRadioButton::clicked, &dialog, &QDialog::accept);
+
+    layout->addWidget(queenButton);
+    layout->addWidget(rookButton);
+    layout->addWidget(bishopButton);
+    layout->addWidget(knightButton);
+
+    if(dialog.exec() == QDialog::Accepted){
+        // Check which button is checked and perform the corresponding action
+        if (queenButton->isChecked()) {
+            // Handle promotion to Queen
+            chessBoard->setPieceType(fromRow, fromCol, ChessPiece::Queen);
+            qDebug() << "Queen";
+            // ...
+        } else if (rookButton->isChecked()) {
+            // Handle promotion to Rook
+            chessBoard->setPieceType(fromRow, fromCol, ChessPiece::Rook);
+            qDebug() << "Rook";
+            // ...
+        } else if (bishopButton->isChecked()) {
+            // Handle promotion to Bishop
+            chessBoard->setPieceType(fromRow, fromCol, ChessPiece::Bishop);
+            qDebug() << "Bishop";
+            // ...
+        } else if (knightButton->isChecked()) {
+            // Handle promotion to Knight
+            chessBoard->setPieceType(fromRow, fromCol, ChessPiece::Knight);
+            qDebug() << "Knight";
+            // ...
+        }
+    }
 }
 
 void ChessBoardWidget::checkTimerSlot()

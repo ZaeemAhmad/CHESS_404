@@ -9,6 +9,7 @@ Game::Game(ChessBoard* chessboard, QObject *parent) : QObject(parent), chessboar
     currentPlayer = ChessPiece::White;
     QObject::connect(&whiteTimerUpdateTimer, &QTimer::timeout, this, &Game::updateWhiteTimer);
     QObject::connect(&blackTimerUpdateTimer, &QTimer::timeout, this, &Game::updateBlackTimer);
+    QObject::connect(chessboard, &ChessBoard::pawnPromotionSignal, this, &Game::pawnPromotionHandler);
 
 }
 
@@ -27,6 +28,12 @@ void Game::updateBlackTimer()
         blackTimer = blackTimer.addSecs(-1);
         emit blackTimerUpdated(blackTimer);
     }
+}
+
+void Game::pawnPromotionHandler(int fromRow, int toRow, int fromCol, int toCol)
+{
+    emit pawnPromotionGUI(fromRow, toRow, fromCol, toCol);
+    qDebug() << "mf reacher this";
 }
 
 void Game::makeMove(int fromRow, int fromCol, int toRow, int toCol)
