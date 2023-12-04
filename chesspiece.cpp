@@ -102,7 +102,7 @@ bool ChessPiece::isValidMove_King(Type type,int fromRow, int fromCol, int toRow,
     // Not a valid move for the King
     return false;
 }
-bool ChessPiece::isValidMove_Queen(Type type, int fromRow,int fromCol,int toRow,int toCol,ChessBoard& board)const{
+bool ChessPiece::isValidMove_Queen(int fromRow,int fromCol,int toRow,int toCol,ChessBoard& board)const{
     //A Queen can move horizontally, vertically and also diagonally.
     int rowDiff = toRow - fromRow;                               //This is used to move diagonally.
     int colDiff = toCol - fromCol;
@@ -224,7 +224,7 @@ bool ChessPiece::isValidMove_Pawn( int fromRow, int fromCol, int toRow, int toCo
     return false;
 }
 
-bool ChessPiece::isValidMove_Knight(int fromRow, int fromCol, int toRow, int toCol, const ChessBoard &board) const
+bool ChessPiece::isValidMove_Knight(int fromRow, int fromCol, int toRow, int toCol) const
 {
     // Knight logic
     // Night moves in L pattern

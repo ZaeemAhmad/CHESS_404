@@ -10,12 +10,13 @@ private:
     Node *next;
     int row,col;
 public:
-    Node(ChessPiece p):piece(p),next(nullptr)   {}
+    Node(ChessPiece p): piece(p), next(nullptr), row(-1), col(-1) {}
     void coordinatesSet(int r,int c)    { row=r,col=c; }
     void nextSet(Node* n)   { next=n; }
 
     Node* NextGet() { return next;}
     ChessPiece PieceGet() {return piece;}
+    void setPiece(ChessPiece::Type t) {piece.setType(t);}
     int RowGet()    {return row;}
     int ColGet()    {return col;}
 };
@@ -43,43 +44,43 @@ public:
             temp2->nextSet(temp);
         }
     }
-    void deletePiece(int ROW,int COL)
+    void deletePiece(int ROW, int COL)
     {
-        if (head == nullptr)
+        if(!head)
         {
             qDebug()<<"The list is Empty DipS*it.";
             return;
         }
-        else
+
+        if (head->RowGet()==ROW && head->ColGet()==COL)
         {
-            Node* temp=head;
-            while (temp!=nullptr)
-            {
-                if (temp->RowGet()==ROW && temp->ColGet()==COL && temp==head)
-                {
-                    head=head->NextGet();
-                    return;
+            Node* toDel = head;
+            head = head->NextGet();
+            delete toDel;
+        }
+        else{
+            Node* current = head;
+            while(current->NextGet()){
+                if(current->RowGet()==ROW && current->ColGet()==COL){
+                    Node* toDel = current->NextGet();
+                    current->nextSet(toDel->NextGet());
+                    delete toDel;
+                }else{
+                    current = current->NextGet();
                 }
-                else if (temp->RowGet()==ROW && temp->ColGet()==COL)
-                {
-                    Node* temp2=head;
-                    while (temp2->NextGet()!=temp)  { temp2=temp2->NextGet(); }
-                    temp2->nextSet(temp->NextGet());
-                    return;
-                }
-                temp=temp->NextGet();
             }
         }
     }
-    void updatePiece(int currentRow, int currentCol, int updateRow, int updateCol)
+
+void updatePiece(int currentRow, int currentCol, int updateRow, int updateCol)
     {
-        Node* temp=head;
-        while (temp!=nullptr)
+        Node* temp = head;
+        while(temp)
         {
             if (temp->RowGet()==currentRow && temp->ColGet()==currentCol)
             {
                 temp->coordinatesSet(updateRow,updateCol);
-                return;
+                break;
             }
             else
             {
@@ -88,30 +89,44 @@ public:
         }
     }
 
-    void displayAll(){
-        qDebug() << "display all";
-        Node* temp = head;
-        while(temp){
-            qDebug() << temp->PieceGet().getType() << "at row & col " <<  temp->RowGet() << temp->ColGet();
+void updatePieceType(int currentRow, int currentCol, ChessPiece::Type type){
+    Node* temp = head;
+    while(temp){
+        if(temp->RowGet() == currentRow && temp->ColGet() == currentCol){
+            temp->setPiece(type);
+                break;
+        }else{
             temp = temp->NextGet();
         }
     }
+}
 
+//    void display(int row, int col){
+//        qDebug() << "display all";
+//        Node* temp = head;e
+//        while(temp){
+//            qDebug() << temp->PieceGet().getType() << "at row & col " <<  temp->RowGet() << temp->ColGet();
+//            temp = temp->NextGet();
+//        }
+//    }
     void display(int row,int col)
     {
         Node* temp=head;
-        while (temp->RowGet()!=row && temp->ColGet()!=col)
+        while (temp)
         {
-            temp=temp->NextGet();
+            if (temp->RowGet() == row && temp->ColGet() == col)
+            {
+                qDebug() << "in";
+                ChessPiece tempPiece=temp->PieceGet();
+                ChessPiece::Color tempColor=tempPiece.getColor();
+                qDebug()<<"type: "<<tempPiece.getType()<<", Color: "<<tempColor << "at row & col" << row << col;
+                return;
+            }
+            temp = temp->NextGet();
         }
-        if (temp->RowGet()==row && temp->ColGet()==col)
-        {
-            qDebug() << "in";
-            ChessPiece tempPiece=temp->PieceGet();
-            ChessPiece::Color tempColor=tempPiece.getColor();
-            qDebug()<<"type: "<<tempPiece.getType()<<", Color: "<<tempColor << "at row & col" << row << col;
-        }
+        qDebug() << "Piece not found";
     }
+
 };
 
 #endif // LINK_LIST_H

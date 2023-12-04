@@ -13,14 +13,14 @@ public:
     ~ChessBoard();
     void initialBoard();
     void setPieceType(int row, int col, Type t);
+    void updateLinkedListPiece(int row, int col, Type t);
     link_list white, black;
-    static int onlyOnce;
 
     void updateLinkList(Color currentPieceColor,Color nextPieceColor,int fromRow,int fromCol,int toRow,int toCol);
     void setList(ChessPiece board, int row, int col);
     bool CHECK();
 //temporary function for checking
-    void displayLinkList();
+    void displayLinkList(Color color, int row, int col);
 
     // Piece Movement Logic
     void movePiece(int fromRow, int fromCol, int toRow, int toCol);
@@ -29,7 +29,7 @@ public:
     bool VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int toCol);
 
     // Special Case
-    bool isPawnPromotion(int fromRow, int toRow, int fromCol, int toCol);
+    bool isPawnPromotion(int fromRow, int toRow, int fromCol);
 
     // To check if the given coordinates are between 8x8
     bool isValidChessSquare(int row, int col) const;

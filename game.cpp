@@ -1,7 +1,7 @@
 #include "game.h"
 
 
-Game::Game(ChessBoard* chessboard, QObject *parent) : QObject(parent), chessboard(chessboard)
+Game::Game(ChessBoard* chessboard, QObject *parent) : QObject(parent), chessboard(chessboard), isPawnPromotion(false)
 {
     whiteTimer.setHMS(0, 5, 0);
     blackTimer.setHMS(0, 5, 0);
@@ -33,6 +33,7 @@ void Game::updateBlackTimer()
 void Game::pawnPromotionHandler(int fromRow, int toRow, int fromCol, int toCol)
 {
     emit pawnPromotionGUI(fromRow, toRow, fromCol, toCol);
+    isPawnPromotion = true;
     qDebug() << "mf reacher this";
 }
 
@@ -45,7 +46,8 @@ void Game::makeMove(int fromRow, int fromCol, int toRow, int toCol)
         if(chessboard->VALIDMOVE(pieceToMove.getType(), fromRow, fromCol, toRow, toCol)){
             chessboard->movePiece(fromRow, fromCol, toRow, toCol);
             // Switches the turn
-            currentPlayer = (currentPlayer == ChessPiece::Color::White) ? ChessPiece::Color::Black : ChessPiece::Color::White;
+            if(!isPawnPromotion)
+                currentPlayer = (currentPlayer == ChessPiece::Color::White) ? ChessPiece::Color::Black : ChessPiece::Color::White;
 
             // Starts the timer only when the first move is made
             blackTimerUpdateTimer.start(1000);
@@ -62,6 +64,7 @@ void Game::makeMove(int fromRow, int fromCol, int toRow, int toCol)
             }
         }
     }
+    isPawnPromotion = false;
 }
 
 ChessPiece::Color Game::getCurrentPlayer() const

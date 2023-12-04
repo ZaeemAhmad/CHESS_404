@@ -1,7 +1,6 @@
 #include "chessboard.h"
 #include <QDebug>
 
-int ChessBoard::onlyOnce=0;
 ChessBoard::ChessBoard(QObject* parent) : QObject(parent) {}
 
 ChessBoard::~ChessBoard() {}
@@ -66,23 +65,44 @@ void ChessBoard::setPieceType(int row, int col, ChessPiece::Type type)
     }
 }
 
+void ChessBoard::updateLinkedListPiece(int row, int col, ChessPiece::Type t)
+{
+    ChessPiece::Color color = board[row][col].getColor();
+    white.display(row, col);
+    if (isValidChessSquare(row, col)) {
+        if( color == White ){
+            white.updatePieceType(row, col, t);
+        }else{
+            black.updatePieceType(row, col, t);
+        }
+    }
+}
+
 void ChessBoard::setList(ChessPiece board, int row, int col)
 {
     if ( row >= 0 && row < 2 )
     { black.insertPiece(board, row, col);
-        black.display(row, col);
-        qDebug() << "called" << board.getType() << row << col;
+//        qDebug() << "called" << board.getType() << row << col;
     }
     else if ( row >= 5 && row < 8)
     { white.insertPiece(board, row, col);
-        white.display(row, col);
-        qDebug() << "called1" << board.getType() << row << col;
+//        qDebug() << "called1" << board.getType() << row << col;
     }
 }
 
 bool ChessBoard::CHECK()
 {
     return true;
+}
+
+void ChessBoard::displayLinkList(ChessPiece::Color color, int row, int col)
+{
+    qDebug() << color;
+    if(color == ChessPiece::Color::White){
+        white.display(row, col);
+    }else{
+        black.display(row, col);
+    }
 }
 void ChessBoard::updateLinkList(Color currentPieceColor, Color nextPieceColor, int fromRow, int fromCol, int toRow, int toCol)
 {
@@ -102,10 +122,6 @@ void ChessBoard::updateLinkList(Color currentPieceColor, Color nextPieceColor, i
     }
 }
 
-void ChessBoard::displayLinkList()
-{
-    black.display(0,4);
-}
 
 void ChessBoard::removePiece(int row, int col)
 {
@@ -127,10 +143,10 @@ bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int t
         return isValidMove_Rook(type, fromRow, fromCol, toRow, toCol, *this);
         break;
     case Knight:
-        return isValidMove_Knight(fromRow, fromCol, toRow, toCol, *this);
+        return isValidMove_Knight(fromRow, fromCol, toRow, toCol);
         break;
     case Queen:
-        return isValidMove_Queen(type,fromRow,fromCol,toRow,toCol,*this);
+        return isValidMove_Queen(fromRow, fromCol, toRow, toCol, *this);
         break;
     case King:
         return isValidMove_King( type,  fromRow,fromCol,  toRow,  toCol, *this);
@@ -140,11 +156,14 @@ bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int t
         break;
     case Pawn:
         if(isValidMove_Pawn(fromRow,fromCol,toRow,toCol,*this)){
-            if(!isPawnPromotion(fromRow, toRow, fromCol, toCol)){
+            if(!isPawnPromotion(fromRow, toRow, fromCol)){
                 return true;
             }else{
                 // Emit pawn promotion signal
+                qDebug() << "start";
+
                 emit pawnPromotionSignal(fromRow, toRow, fromCol, toCol);
+                qDebug() << "damn bro";
                 return true;
             }
         }
@@ -153,9 +172,11 @@ bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int t
         return false;
         break;
     }
+
+    return false;
 }
 
-bool ChessBoard::isPawnPromotion(int fromRow, int toRow, int fromCol, int toCol)
+bool ChessBoard::isPawnPromotion(int fromRow, int toRow, int fromCol)
 {
     Color color = board[fromRow][fromCol].getColor();
     if((color == Black && toRow == 7) || (color == White && toRow == 0)){
@@ -167,9 +188,10 @@ bool ChessBoard::isPawnPromotion(int fromRow, int toRow, int fromCol, int toCol)
 
 void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
 {
-    displayLinkList();
-    white.displayAll();
-    black.displayAll();
+    qDebug() << "From Piece";
+    displayLinkList(board[fromRow][fromCol].getColor(), fromRow, fromCol);
+    qDebug() << "To Piece";
+    displayLinkList(board[toRow][toCol].getColor(), toRow, toCol);
 
     // Chess Move implementation logic
     // Checking if the move is valid before upadating the board
@@ -178,6 +200,7 @@ void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
 
         const Color currentPieceColor = getPieceColor(fromRow, fromCol);
         const Color nextPositionPieceColor = getPieceColor(toRow, toCol);
+        qDebug() << "kdjgakljgdklgaj" <<  getPieceType(fromRow, fromCol) << getPieceType(toRow, toCol);
         // this condition prevents same color pieces to move upon them.
         // is condition ki waja sy same color ky pieces ek dosry ko capture nai kar skty.
         qDebug()<<"Origin: "<<fromRow<<", "<<fromCol<<"\nDestination: "<<toRow<<", "<<toCol;
@@ -192,8 +215,6 @@ void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
             }
         }
     }
-    white.display(toRow, toCol);
-    black.display(toRow, toCol);
 }
 
 bool ChessBoard::isSquareOccupied(int row, int col) const
@@ -214,6 +235,8 @@ const ChessPiece &ChessBoard::getPiece(int row, int col) const
     // Returns the piece reference at current row & col
     if(isValidChessSquare(row, col)){
         return board[row][col];
+    }else{
+        return ChessPiece();
     }
 }
 

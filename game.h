@@ -35,6 +35,7 @@ private:
     QTime blackTimer;
     QTimer whiteTimerUpdateTimer;
     QTimer blackTimerUpdateTimer;
+    bool isPawnPromotion;
 };
 
 #endif // GAME_H
