@@ -29,7 +29,7 @@ public:
     bool VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int toCol);
 
     // Special Case
-    bool isPawnPromotion(int fromRow, int toRow, int fromCol);
+    bool isPawnPromotion(ChessPiece::Type type, int fromRow, int toRow, int fromCol);
 
     // To check if the given coordinates are between 8x8
     bool isValidChessSquare(int row, int col) const;

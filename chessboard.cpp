@@ -155,18 +155,17 @@ bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int t
         return isValidMove_Bishop(fromRow,fromCol,toRow,toCol,*this);
         break;
     case Pawn:
-        if(isValidMove_Pawn(fromRow,fromCol,toRow,toCol,*this)){
-            if(!isPawnPromotion(fromRow, toRow, fromCol)){
-                return true;
-            }else{
-                // Emit pawn promotion signal
-                qDebug() << "start";
-
-                emit pawnPromotionSignal(fromRow, toRow, fromCol, toCol);
-                qDebug() << "damn bro";
-                return true;
-            }
-        }
+        return isValidMove_Pawn(fromRow,fromCol,toRow,toCol,*this);
+//            if(!isPawnPromotion(fromRow, toRow, fromCol)){
+//                return true;
+//            }
+//            else{
+//                // Emit pawn promotion signal
+//                emit pawnPromotionSignal(fromRow, toRow, fromCol, toCol);
+//                qDebug() << "damn bro";
+//                return true;
+//            }
+//        }
         break;
     default:
         return false;
@@ -176,10 +175,11 @@ bool ChessBoard::VALIDMOVE(Type type, int fromRow, int fromCol, int toRow, int t
     return false;
 }
 
-bool ChessBoard::isPawnPromotion(int fromRow, int toRow, int fromCol)
+bool ChessBoard::isPawnPromotion(ChessPiece::Type type, int fromRow, int toRow, int fromCol)
 {
+
     Color color = board[fromRow][fromCol].getColor();
-    if((color == Black && toRow == 7) || (color == White && toRow == 0)){
+    if((type == Pawn && color == Black && toRow == 7) || (type == Pawn && color == White && toRow == 0)){
         return true;
     }
     return false;
@@ -200,7 +200,6 @@ void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
 
         const Color currentPieceColor = getPieceColor(fromRow, fromCol);
         const Color nextPositionPieceColor = getPieceColor(toRow, toCol);
-        qDebug() << "kdjgakljgdklgaj" <<  getPieceType(fromRow, fromCol) << getPieceType(toRow, toCol);
         // this condition prevents same color pieces to move upon them.
         // is condition ki waja sy same color ky pieces ek dosry ko capture nai kar skty.
         qDebug()<<"Origin: "<<fromRow<<", "<<fromCol<<"\nDestination: "<<toRow<<", "<<toCol;
@@ -208,6 +207,10 @@ void ChessBoard::movePiece(int fromRow, int fromCol, int toRow, int toCol)
         {
             if ( VALIDMOVE(getPieceType(fromRow,fromCol), fromRow, fromCol, toRow, toCol) )
             {
+                // Each time checks if the pawn is at promotion state
+                if(isPawnPromotion(getPieceType(fromRow, fromCol), fromRow, toRow, fromCol)){
+                    emit pawnPromotionSignal(fromRow, toRow, fromCol, toCol);
+                }
                 updateLinkList(currentPieceColor,nextPositionPieceColor,fromRow,fromCol,toRow,toCol);
                 ChessPiece pieceToMove = board[fromRow][fromCol];
                 board[fromRow][fromCol] = ChessPiece(); // To clear the current square

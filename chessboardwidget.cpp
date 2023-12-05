@@ -157,25 +157,22 @@ void ChessBoardWidget::pawnPromotionDialog(int fromRow, int toRow, int fromCol, 
         if (queenButton->isChecked()) {
             // Handle promotion to Queen
             chessBoard->setPieceType(fromRow, fromCol, ChessPiece::Queen);
-            chessBoard->updateLinkedListPiece(fromRow, fromCol, ChessPiece::Queen);
             qDebug() << "Queen";
         } else if (rookButton->isChecked()) {
             // Handle promotion to Rook
             chessBoard->setPieceType(fromRow, fromCol, ChessPiece::Rook);
-            chessBoard->updateLinkedListPiece(fromRow, fromCol, ChessPiece::Rook);
             qDebug() << "Rook";
         } else if (bishopButton->isChecked()) {
             // Handle promotion to Bishop
             chessBoard->setPieceType(fromRow, fromCol, ChessPiece::Bishop);
-            chessBoard->updateLinkedListPiece(fromRow, fromCol, ChessPiece::Bishop);
             qDebug() << "Bishop";
         } else if (knightButton->isChecked()) {
             // Handle promotion to Knight
             chessBoard->setPieceType(fromRow, fromCol, ChessPiece::Knight);
-            chessBoard->updateLinkedListPiece(fromRow, fromCol, ChessPiece::Knight);
             qDebug() << "Knight";
         }
     }
+    chessBoard->updateLinkedListPiece(fromRow, fromCol, ChessPiece::Knight);
 }
 
 void ChessBoardWidget::checkTimerSlot()

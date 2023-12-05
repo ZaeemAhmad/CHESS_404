@@ -40,27 +40,31 @@ void Game::pawnPromotionHandler(int fromRow, int toRow, int fromCol, int toCol)
 void Game::makeMove(int fromRow, int fromCol, int toRow, int toCol)
 {
     ChessPiece pieceToMove = chessboard->getPiece(fromRow, fromCol);
+    ChessPiece targetPiece = chessboard->getPiece(toRow, toCol);
 
     if(!pieceToMove.isEmpty() && pieceToMove.getColor() == currentPlayer){
         // Check if the move is valid
         if(chessboard->VALIDMOVE(pieceToMove.getType(), fromRow, fromCol, toRow, toCol)){
             chessboard->movePiece(fromRow, fromCol, toRow, toCol);
             // Switches the turn
-            if(!isPawnPromotion)
-                currentPlayer = (currentPlayer == ChessPiece::Color::White) ? ChessPiece::Color::Black : ChessPiece::Color::White;
+            if(pieceToMove.getColor() != targetPiece.getColor()){
 
-            // Starts the timer only when the first move is made
-            blackTimerUpdateTimer.start(1000);
-            whiteTimerUpdateTimer.start(1000);
+                if(!isPawnPromotion)
+                    currentPlayer = (currentPlayer == ChessPiece::Color::White) ? ChessPiece::Color::Black : ChessPiece::Color::White;
 
-            if(currentPlayer == ChessPiece::Color::White){
-                qDebug() << "white timer: " << whiteTimer;
+                // Starts the timer only when the first move is made
                 blackTimerUpdateTimer.start(1000);
-
-            }else{
-                qDebug() << "black timer: " << blackTimer;
                 whiteTimerUpdateTimer.start(1000);
 
+                if(currentPlayer == ChessPiece::Color::White){
+                    qDebug() << "white timer: " << whiteTimer;
+                    blackTimerUpdateTimer.start(1000);
+
+                }else{
+                    qDebug() << "black timer: " << blackTimer;
+                    whiteTimerUpdateTimer.start(1000);
+
+                }
             }
         }
     }
